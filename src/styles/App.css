@@ -34,7 +34,9 @@
   font-family: "Poppins", sans-serif;
   background-color: #f9fafc;
   color: #333;
+  min-height: 100vh;
 }
+
 h1 {
   margin-bottom: 1.5rem;
 }
@@ -43,6 +45,7 @@ h1 {
   from {
     transform: rotate(0deg);
   }
+  
   to {
     transform: rotate(360deg);
   }

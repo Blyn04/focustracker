@@ -34,10 +34,12 @@ const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
         value={task}
         onChange={(e) => setTask(e.target.value)}
       />
+
       <h2>
         {String(Math.floor(seconds / 60)).padStart(2, "0")}:
         {String(seconds % 60).padStart(2, "0")}
       </h2>
+      
       <div className="timer-buttons">
         {!isRunning ? (
           <button onClick={() => setIsRunning(true)}>Start</button>

@@ -1,0 +1,48 @@
+.landing-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.landing-content {
+  max-width: 500px;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.landing-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.landing-subtitle {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.landing-button {
+  background: white;
+  color: #2575fc;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.landing-button:hover {
+  background: #2575fc;
+  color: white;
+  transform: scale(1.05);
+}

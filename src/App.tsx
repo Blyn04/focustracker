@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import FocusTimer from "./components/FocusTimer";
+import TaskList from "./components/TaskList";
+import Stats from "./components/Stats";
+import "./styles/App.css";
 
-function App() {
+const App: React.FC = () => {
+  const [totalMinutes, setTotalMinutes] = useState(0);
+  const [tasks, setTasks] = useState<string[]>([]);
+
+  const handleSessionComplete = (minutes: number, task: string) => {
+    setTotalMinutes((prev) => prev + minutes);
+    if (task && !tasks.includes(task)) {
+      setTasks([...tasks, task]);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <h1>🎯 Focus Tracker</h1>
+      <FocusTimer onSessionComplete={handleSessionComplete} />
+      <TaskList tasks={tasks} />
+      <Stats totalMinutes={totalMinutes} />
     </div>
   );
-}
+};
 
 export default App;

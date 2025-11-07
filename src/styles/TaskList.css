@@ -1,0 +1,21 @@
+.task-list {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.task-list h3 {
+  margin-bottom: 0.5rem;
+}
+
+.task-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.task-list li {
+  padding: 0.4rem;
+  border-bottom: 1px solid #eee;
+}

@@ -1,4 +1,3 @@
-/* Override Ant Design day cells to control height */
 .ant-picker-calendar-date-content {
   height: 50px !important;
   display: flex;

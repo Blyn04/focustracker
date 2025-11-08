@@ -1,4 +1,3 @@
-// src/components/TaskList.tsx
 import React from "react";
 import "../styles/TaskList.css";
 
@@ -6,7 +5,7 @@ export interface TaskItem {
   name: string;
   priority: "High" | "Medium" | "Low";
   focusLevel?: number;
-  date?: string; // added for session tracking
+  date?: string; 
 }
 
 interface TaskListProps {

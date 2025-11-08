@@ -1,4 +1,3 @@
-// src/App.tsx
 import React, { useState, useEffect } from "react";
 import FocusTimer, { TaskPriority } from "./components/FocusTimer";
 import TaskList, { TaskItem } from "./components/TaskList";
@@ -10,10 +9,10 @@ import "./styles/App.css";
 import BadgePanel from "./components/BadgePanel";
 
 interface FocusDay {
-  date: string; // "YYYY-MM-DD"
+  date: string; 
   minutes: number;
   avgFocusLevel?: number;
-  sessions?: number; // track sessions per day
+  sessions?: number; 
 }
 
 interface FocusData {
@@ -36,7 +35,6 @@ const App: React.FC = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [earnedBadges, setEarnedBadges] = useState<string[]>([]);
 
-  // Load saved data
   useEffect(() => {
     const saved = localStorage.getItem("focusData");
     if (saved) {
@@ -50,7 +48,6 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // Save data
   useEffect(() => {
     const saveData: FocusData = {
       totalMinutes,
@@ -64,7 +61,6 @@ const App: React.FC = () => {
     setLastSaved(saveData.lastSaved || "");
   }, [totalMinutes, tasks, streak, lastFocusDate, history]);
 
-  // Handle session completion with priority
   const handleSessionComplete = (
     minutes: number,
     taskName: string,
@@ -74,7 +70,6 @@ const App: React.FC = () => {
     const today = new Date();
     const todayStr = today.toISOString().split("T")[0];
 
-    // Calculate streak
     let newStreak = streak;
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -88,13 +83,11 @@ const App: React.FC = () => {
     setStreak(newStreak);
     setLastFocusDate(today.toDateString());
 
-    // Add task with priority and focus level
     setTasks((prev) => [
       ...prev,
       { name: taskName, priority, focusLevel: level, date: todayStr },
     ]);
 
-    // Update history with sessions
     setHistory((prev) => {
       const existing = prev.find((h) => h.date === todayStr);
       if (existing) {
@@ -113,6 +106,7 @@ const App: React.FC = () => {
               }
             : h
         );
+
       } else {
         return [
           ...prev,
@@ -121,7 +115,6 @@ const App: React.FC = () => {
       }
     });
 
-    // Check for achievements
     const todaySessions =
       (history.find((h) => h.date === todayStr)?.sessions || 0) + 1;
     const newBadges: string[] = [];
@@ -129,9 +122,11 @@ const App: React.FC = () => {
     if (totalMinutes + minutes >= 100 && !earnedBadges.includes("100 Minutes Focus")) {
       newBadges.push("100 Minutes Focus");
     }
+
     if (newStreak >= 7 && !earnedBadges.includes("7-Day Streak")) {
       newBadges.push("7-Day Streak");
     }
+
     if (todaySessions >= 5 && !earnedBadges.includes("5 Sessions in a Day")) {
       newBadges.push("5 Sessions in a Day");
     }

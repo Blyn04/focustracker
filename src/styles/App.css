@@ -7,12 +7,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  /* Added gradient background */
   background: linear-gradient(135deg, #babde6 0%, #547aec 50%, #064eca 100%);
 }
 
- /* Reset heading margins for main content only */
 .main-content h1,
 .main-content h2,
 .main-content h3,
@@ -26,7 +23,7 @@
 .main-content h1 {
   font-size: 2.5rem;
   color: white;
-  margin-bottom: 1.5rem; /* controlled spacing */
+  margin-bottom: 1.5rem;
 }
 
 .last-saved {

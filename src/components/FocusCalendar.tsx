@@ -4,7 +4,7 @@ import dayjs, { Dayjs } from "dayjs";
 import "antd/dist/reset.css";
 
 interface FocusDay {
-  date: string; // "YYYY-MM-DD"
+  date: string;
   minutes: number;
   avgFocusLevel?: number;
 }
@@ -20,12 +20,13 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
   };
 
   const getBadgeStatus = (minutes: number, level?: number) => {
-    if (!minutes) return "default"; // gray = no data
+    if (!minutes) return "default"; 
     if (level !== undefined) {
-      if (level >= 4) return "success"; // green = high focus
-      if (level >= 2) return "warning"; // orange = medium focus
-      return "error"; // red = low focus
+      if (level >= 4) return "success"; 
+      if (level >= 2) return "warning"; 
+      return "error";
     }
+
     if (minutes >= 60) return "success";
     if (minutes >= 30) return "warning";
     return "error";
@@ -50,14 +51,14 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
       className="focus-calendar-wrapper"
       style={{
         marginTop: "2rem",
-        width: "500px", // set fixed width
-        height: "550px", // set fixed height
+        width: "500px", 
+        height: "550px",
       }}
     >
       <h3 style={{ textAlign: "center" }}>📅 Focus Calendar</h3>
       <Calendar
         dateCellRender={dateCellRender}
-        fullscreen={false} // prevents auto expanding to full width
+        fullscreen={false} 
       />
     </div>
   );

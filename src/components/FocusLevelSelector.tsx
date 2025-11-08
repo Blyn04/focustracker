@@ -1,4 +1,3 @@
-// src/components/FocusLevelSelector.tsx
 import React, { useState } from "react";
 import "../styles/FocusLevelSelector.css";
 

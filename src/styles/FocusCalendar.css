@@ -1,27 +1,11 @@
-.focus-calendar {
-  margin-top: 2rem;
-  text-align: center;
+/* Override Ant Design day cells to control height */
+.ant-picker-calendar-date-content {
+  height: 50px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-top: 0.5rem;
-}
-
-.calendar-day {
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
-  border-radius: 6px;
-  color: #000;
-  font-size: 0.8rem;
-  cursor: default;
-  transition: transform 0.1s;
-}
-
-.calendar-day:hover {
-  transform: scale(1.2);
-  z-index: 1;
+.ant-picker-calendar-date {
+  padding: 0 !important;
 }

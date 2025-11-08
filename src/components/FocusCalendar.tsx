@@ -1,4 +1,3 @@
-// src/components/FocusCalendar.tsx
 import React from "react";
 import { Calendar, Badge, Tooltip } from "antd";
 import dayjs, { Dayjs } from "dayjs";
@@ -27,7 +26,6 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
       if (level >= 2) return "warning"; // orange = medium focus
       return "error"; // red = low focus
     }
-    // fallback by minutes
     if (minutes >= 60) return "success";
     if (minutes >= 30) return "warning";
     return "error";
@@ -48,9 +46,19 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
   };
 
   return (
-    <div style={{ marginTop: "2rem" }}>
-      <h3>📅 Focus Calendar</h3>
-      <Calendar dateCellRender={dateCellRender} />
+    <div
+      className="focus-calendar-wrapper"
+      style={{
+        marginTop: "2rem",
+        width: "500px", // set fixed width
+        height: "550px", // set fixed height
+      }}
+    >
+      <h3 style={{ textAlign: "center" }}>📅 Focus Calendar</h3>
+      <Calendar
+        dateCellRender={dateCellRender}
+        fullscreen={false} // prevents auto expanding to full width
+      />
     </div>
   );
 };

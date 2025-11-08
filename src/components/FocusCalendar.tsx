@@ -1,6 +1,8 @@
 // src/components/FocusCalendar.tsx
 import React from "react";
-import "../styles/FocusCalendar.css";
+import { Calendar, Badge, Tooltip } from "antd";
+import dayjs, { Dayjs } from "dayjs";
+import "antd/dist/reset.css";
 
 interface FocusDay {
   date: string; // "YYYY-MM-DD"
@@ -13,58 +15,42 @@ interface FocusCalendarProps {
 }
 
 const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-
-  // First day of month
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-
-  const daysArray = Array.from({ length: lastDay.getDate() }, (_, i) => i + 1);
-
-  const getDayData = (day: number) => {
-    const dateStr = new Date(year, month, day).toISOString().split("T")[0];
+  const getDayData = (date: Dayjs) => {
+    const dateStr = date.format("YYYY-MM-DD");
     return history.find((h) => h.date === dateStr);
   };
 
-  const getColor = (minutes: number, level?: number) => {
-    // Adjust colors based on minutes or focus level
-    if (!minutes) return "#f0f0f0"; // gray = no data
-    if (level) {
-      if (level >= 4) return "#4caf50"; // green = high focus
-      if (level >= 2) return "#ff9800"; // orange = medium focus
-      return "#f44336"; // red = low focus
+  const getBadgeStatus = (minutes: number, level?: number) => {
+    if (!minutes) return "default"; // gray = no data
+    if (level !== undefined) {
+      if (level >= 4) return "success"; // green = high focus
+      if (level >= 2) return "warning"; // orange = medium focus
+      return "error"; // red = low focus
     }
     // fallback by minutes
-    if (minutes >= 60) return "#4caf50";
-    if (minutes >= 30) return "#ff9800";
-    return "#f44336";
+    if (minutes >= 60) return "success";
+    if (minutes >= 30) return "warning";
+    return "error";
+  };
+
+  const dateCellRender = (value: Dayjs) => {
+    const data = getDayData(value);
+    if (!data) return null;
+
+    const status = getBadgeStatus(data.minutes, data.avgFocusLevel);
+    const tooltipText = `${data.minutes} min, Focus Level: ${data.avgFocusLevel ?? "-"}`;
+
+    return (
+      <Tooltip title={tooltipText}>
+        <Badge status={status} text={value.date()} />
+      </Tooltip>
+    );
   };
 
   return (
-    <div className="focus-calendar">
-      <h3>📅 Focus Calendar ({today.toLocaleString("default", { month: "long" })})</h3>
-      <div className="calendar-grid">
-        {daysArray.map((day) => {
-          const data = getDayData(day);
-          const color = data ? getColor(data.minutes, data.avgFocusLevel) : "#f0f0f0";
-          return (
-            <div
-              key={day}
-              className="calendar-day"
-              style={{ backgroundColor: color }}
-              title={
-                data
-                  ? `${day}/${month + 1}: ${data.minutes} min, Focus Level: ${data.avgFocusLevel ?? "-"}`
-                  : `${day}/${month + 1}: No data`
-              }
-            >
-              {day}
-            </div>
-          );
-        })}
-      </div>
+    <div style={{ marginTop: "2rem" }}>
+      <h3>📅 Focus Calendar</h3>
+      <Calendar dateCellRender={dateCellRender} />
     </div>
   );
 };

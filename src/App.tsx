@@ -113,7 +113,7 @@ const App: React.FC = () => {
           <Stats totalMinutes={totalMinutes} streak={streak} />
           <p className="last-saved">💾 Auto-saved: {lastSaved}</p>
           <TaskList tasks={tasks} />
-          <FocusCalendar history={history} /> {/* Added calendar here */}
+          <FocusCalendar history={history} />
         </div>
       )}
     </div>

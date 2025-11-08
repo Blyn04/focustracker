@@ -46,27 +46,23 @@ const App: React.FC = () => {
     setLastSaved(saveData.lastSaved || ""); // ✅ fix here
   }, [totalMinutes, tasks, streak, lastFocusDate]);
 
-  const handleSessionComplete = (minutes: number, task: string) => {
+  const handleSessionComplete = (minutes: number, task: string, level?: number) => {
     const today = new Date().toDateString();
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toDateString();
 
     let newStreak = streak;
-
     if (lastFocusDate === today) {
-      // same day, no streak increase
       newStreak = streak;
     } else if (lastFocusDate === yesterdayStr) {
-      // focused yesterday, continue streak
       newStreak = streak + 1;
     } else {
-      // missed a day or first session
       newStreak = 1;
     }
 
     setTotalMinutes((prev) => prev + minutes);
-    if (task && !tasks.includes(task)) setTasks((prev) => [...prev, task]);
+    if (task && !tasks.includes(task)) setTasks((prev) => [...prev, `${task} (Focus: ${level ?? "-"})`]);
     setStreak(newStreak);
     setLastFocusDate(today);
   };

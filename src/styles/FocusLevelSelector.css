@@ -1,0 +1,20 @@
+.focus-level-selector {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.focus-level-selector .levels button {
+  margin: 0.25rem;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #064eca;
+  border-radius: 8px;
+  cursor: pointer;
+  background: white;
+  transition: transform 0.1s ease;
+}
+
+.focus-level-selector .levels button.selected {
+  background: #064eca;
+  color: white;
+  transform: scale(1.1);
+}

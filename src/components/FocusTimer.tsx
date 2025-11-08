@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import "../styles/FocusTimer.css";
-import FocusLevelSelector from "./FocusLevelSelector"; // make sure to create this
+import FocusLevelSelector from "./FocusLevelSelector";
+
+export type TaskPriority = "High" | "Medium" | "Low";
 
 interface FocusTimerProps {
-  onSessionComplete: (minutes: number, task: string, level?: number) => void;
+  onSessionComplete: (minutes: number, task: string, priority: TaskPriority, level?: number) => void;
 }
 
 const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
   const [seconds, setSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);  
   const [task, setTask] = useState("");
+  const [priority, setPriority] = useState<TaskPriority>("Medium");
   const [focusLevel, setFocusLevel] = useState<number | null>(null);
   const [showLevelSelector, setShowLevelSelector] = useState(false);
 
@@ -23,13 +26,10 @@ const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
 
   const handleStop = () => {
     setIsRunning(false);
-
     if (!task.trim()) {
       alert("Please enter a task before starting!");
       return;
     }
-
-    // Show the focus level selector after stopping
     setShowLevelSelector(true);
   };
 
@@ -37,12 +37,11 @@ const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
     const minutes = Math.max(1, Math.floor(seconds / 60));
     setFocusLevel(level);
 
-    // Complete session with focus level
-    onSessionComplete(minutes, task.trim(), level);
+    onSessionComplete(minutes, task.trim(), priority, level);
 
-    // Reset timer and task input
     setSeconds(0);
     setTask("");
+    setPriority("Medium");
     setFocusLevel(null);
     setShowLevelSelector(false);
   };
@@ -54,8 +53,18 @@ const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
         placeholder="Enter task..."
         value={task}
         onChange={(e) => setTask(e.target.value)}
-        disabled={isRunning || showLevelSelector} // prevent edits while running or selecting level
+        disabled={isRunning || showLevelSelector}
       />
+
+      <select
+        value={priority}
+        onChange={(e) => setPriority(e.target.value as TaskPriority)}
+        disabled={isRunning || showLevelSelector}
+      >
+        <option value="High">High Priority</option>
+        <option value="Medium">Medium Priority</option>
+        <option value="Low">Low Priority</option>
+      </select>
 
       <h2>
         {String(Math.floor(seconds / 60)).padStart(2, "0")}:

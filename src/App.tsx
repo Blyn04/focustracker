@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import FocusTimer from "./components/FocusTimer";
-import TaskList from "./components/TaskList";
+import FocusTimer, { TaskPriority } from "./components/FocusTimer";
+import TaskList, { TaskItem } from "./components/TaskList";
 import Stats from "./components/Stats";
 import LandingPage from "./components/LandingPage";
-import FocusCalendar from "./components/FocusCalendar"; // new import
+import FocusCalendar from "./components/FocusCalendar";
 import "./styles/App.css";
 
 interface FocusDay {
@@ -14,21 +14,21 @@ interface FocusDay {
 
 interface FocusData {
   totalMinutes: number;
-  tasks: string[];
+  tasks: TaskItem[];
   lastFocusDate: string | null;
   streak: number;
-  history: FocusDay[]; // added history
+  history: FocusDay[];
   lastSaved?: string;
 }
 
 const App: React.FC = () => {
   const [hasStarted, setHasStarted] = useState(false);
   const [totalMinutes, setTotalMinutes] = useState(0);
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [streak, setStreak] = useState(0);
   const [lastFocusDate, setLastFocusDate] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<string>("");
-  const [history, setHistory] = useState<FocusDay[]>([]); // new state
+  const [history, setHistory] = useState<FocusDay[]>([]);
 
   // ✅ Load saved data when app starts
   useEffect(() => {
@@ -58,8 +58,13 @@ const App: React.FC = () => {
     setLastSaved(saveData.lastSaved || "");
   }, [totalMinutes, tasks, streak, lastFocusDate, history]);
 
-  // ✅ Handle session completion
-  const handleSessionComplete = (minutes: number, task: string, level?: number) => {
+  // ✅ Handle session completion with priority
+  const handleSessionComplete = (
+    minutes: number,
+    taskName: string,
+    priority: TaskPriority = "Medium",
+    level?: number
+  ) => {
     const today = new Date();
     const todayStr = today.toISOString().split("T")[0];
 
@@ -77,13 +82,16 @@ const App: React.FC = () => {
     }
 
     setTotalMinutes((prev) => prev + minutes);
-    if (task && !tasks.includes(task)) {
-      setTasks((prev) => [...prev, `${task} (Focus: ${level ?? "-"})`]);
-    }
     setStreak(newStreak);
     setLastFocusDate(today.toDateString());
 
-    // Update history
+    // ✅ Add task with priority and focus level
+    setTasks((prev) => [
+      ...prev,
+      { name: taskName, priority, focusLevel: level },
+    ]);
+
+    // ✅ Update history
     setHistory((prev) => {
       const existing = prev.find((h) => h.date === todayStr);
       if (existing) {

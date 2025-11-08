@@ -1,3 +1,4 @@
+// src/components/TaskList.tsx
 import React from "react";
 import "../styles/TaskList.css";
 
@@ -5,6 +6,7 @@ export interface TaskItem {
   name: string;
   priority: "High" | "Medium" | "Low";
   focusLevel?: number;
+  date?: string; // added for session tracking
 }
 
 interface TaskListProps {
@@ -24,7 +26,8 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
         <ul>
           {sortedTasks.map((task, index) => (
             <li key={index}>
-              {task.name} <strong>({task.priority})</strong> {task.focusLevel !== undefined && `- Focus: ${task.focusLevel}`}
+              {task.name} <strong>({task.priority})</strong>{" "}
+              {task.focusLevel !== undefined && `- Focus: ${task.focusLevel}`}
             </li>
           ))}
         </ul>

@@ -32,9 +32,14 @@
   text-align: center;
   padding: 2rem;
   font-family: "Poppins", sans-serif;
-  background-color: #f9fafc;
-  color: #333;
+  background-color: #f9fafb;
   min-height: 100vh;
+}
+
+.last-saved {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 1rem;
 }
 
 h1 {

@@ -20,8 +20,16 @@ const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
 
   const handleStop = () => {
     setIsRunning(false);
-    const minutes = Math.floor(seconds / 60);
-    if (minutes > 0) onSessionComplete(minutes, task);
+
+    // Calculate minutes, but allow even <1 minute to count as 1
+    const minutes = Math.max(1, Math.floor(seconds / 60));
+
+    if (task.trim() !== "") {
+      onSessionComplete(minutes, task.trim());
+    } else {
+      alert("Please enter a task before starting!");
+    }
+
     setSeconds(0);
     setTask("");
   };
@@ -39,10 +47,20 @@ const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
         {String(Math.floor(seconds / 60)).padStart(2, "0")}:
         {String(seconds % 60).padStart(2, "0")}
       </h2>
-      
+
       <div className="timer-buttons">
         {!isRunning ? (
-          <button onClick={() => setIsRunning(true)}>Start</button>
+          <button
+            onClick={() => {
+              if (!task.trim()) {
+                alert("Enter a task before starting!");
+                return;
+              }
+              setIsRunning(true);
+            }}
+          >
+            Start
+          </button>
         ) : (
           <button onClick={handleStop}>Stop</button>
         )}

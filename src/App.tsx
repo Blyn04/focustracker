@@ -10,6 +10,7 @@ interface FocusData {
   tasks: string[];
   lastFocusDate: string | null;
   streak: number;
+  lastSaved?: string;
 }
 
 const App: React.FC = () => {
@@ -17,56 +18,57 @@ const App: React.FC = () => {
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [tasks, setTasks] = useState<string[]>([]);
   const [streak, setStreak] = useState(0);
+  const [lastFocusDate, setLastFocusDate] = useState<string | null>(null);
+  const [lastSaved, setLastSaved] = useState<string>("");
 
-  // 🔹 Load saved data on mount
+  // ✅ Load saved data when app starts
   useEffect(() => {
     const saved = localStorage.getItem("focusData");
     if (saved) {
       const data: FocusData = JSON.parse(saved);
-      setTotalMinutes(data.totalMinutes);
-      setTasks(data.tasks);
-      setStreak(data.streak);
+      setTotalMinutes(data.totalMinutes || 0);
+      setTasks(data.tasks || []);
+      setStreak(data.streak || 0);
+      setLastFocusDate(data.lastFocusDate || null);
+      setLastSaved(data.lastSaved || "");
     }
   }, []);
 
-  // 🔹 Save data automatically
   useEffect(() => {
-    const focusData: FocusData = {
+    const saveData: FocusData = {
       totalMinutes,
       tasks,
       streak,
-      lastFocusDate: new Date().toISOString(),
+      lastFocusDate,
+      lastSaved: new Date().toLocaleString(),
     };
-    
-    localStorage.setItem("focusData", JSON.stringify(focusData));
-  }, [totalMinutes, tasks, streak]);
+    localStorage.setItem("focusData", JSON.stringify(saveData));
+    setLastSaved(saveData.lastSaved || ""); // ✅ fix here
+  }, [totalMinutes, tasks, streak, lastFocusDate]);
 
-  // 🔹 Handle completed session
   const handleSessionComplete = (minutes: number, task: string) => {
+    const today = new Date().toDateString();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toDateString();
+
+    let newStreak = streak;
+
+    if (lastFocusDate === today) {
+      // same day, no streak increase
+      newStreak = streak;
+    } else if (lastFocusDate === yesterdayStr) {
+      // focused yesterday, continue streak
+      newStreak = streak + 1;
+    } else {
+      // missed a day or first session
+      newStreak = 1;
+    }
+
     setTotalMinutes((prev) => prev + minutes);
     if (task && !tasks.includes(task)) setTasks((prev) => [...prev, task]);
-
-    const today = new Date().toDateString();
-    const saved = localStorage.getItem("focusData");
-    let lastDate: string | null = null;
-    
-    if (saved) {
-      const parsed: FocusData = JSON.parse(saved);
-      lastDate = parsed.lastFocusDate;
-    }
-
-    if (lastDate) {
-      const diff =
-        (new Date(today).getTime() - new Date(lastDate).getTime()) /
-        (1000 * 60 * 60 * 24);
-
-      if (diff === 1) setStreak((prev) => prev + 1);
-
-      else if (diff > 1) setStreak(1);
-
-    } else {
-      setStreak(1);
-    }
+    setStreak(newStreak);
+    setLastFocusDate(today);
   };
 
   return (
@@ -78,6 +80,7 @@ const App: React.FC = () => {
           <h1>🎯 Focus Tracker</h1>
           <FocusTimer onSessionComplete={handleSessionComplete} />
           <Stats totalMinutes={totalMinutes} streak={streak} />
+          <p className="last-saved">💾 Auto-saved: {lastSaved}</p>
           <TaskList tasks={tasks} />
         </>
       )}

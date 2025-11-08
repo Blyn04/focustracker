@@ -9,7 +9,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
   return (
     <div className="landing-container">
       <div className="landing-content">
-        <h1 className="landing-title">🎯 Focus Tracker</h1>
+        <h1 className="landing-title">Focus Tracker</h1>
         <p className="landing-subtitle">
           Stay productive, track your focus time, and build daily streaks.
         </p>

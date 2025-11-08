@@ -76,13 +76,13 @@ const App: React.FC = () => {
       {!hasStarted ? (
         <LandingPage onStart={() => setHasStarted(true)} />
       ) : (
-        <>
+        <div className="main-content">
           <h1>🎯 Focus Tracker</h1>
           <FocusTimer onSessionComplete={handleSessionComplete} />
           <Stats totalMinutes={totalMinutes} streak={streak} />
           <p className="last-saved">💾 Auto-saved: {lastSaved}</p>
           <TaskList tasks={tasks} />
-        </>
+        </div>
       )}
     </div>
   );

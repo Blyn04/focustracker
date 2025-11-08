@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
 import "../styles/FocusTimer.css";
 import FocusLevelSelector from "./FocusLevelSelector";
+import { Dropdown, Menu, Button } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 
 export type TaskPriority = "High" | "Medium" | "Low";
 
 interface FocusTimerProps {
-  onSessionComplete: (minutes: number, task: string, priority: TaskPriority, level?: number) => void;
+  onSessionComplete: (
+    minutes: number,
+    task: string,
+    priority: TaskPriority,
+    level?: number
+  ) => void;
 }
 
 const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
   const [seconds, setSeconds] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);  
+  const [isRunning, setIsRunning] = useState(false);
   const [task, setTask] = useState("");
   const [priority, setPriority] = useState<TaskPriority>("Medium");
   const [focusLevel, setFocusLevel] = useState<number | null>(null);
@@ -46,6 +53,16 @@ const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
     setShowLevelSelector(false);
   };
 
+  const menu = (
+    <Menu>
+      {(["High", "Medium", "Low"] as TaskPriority[]).map((p) => (
+        <Menu.Item key={p} onClick={() => setPriority(p)}>
+          {p} Priority
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+
   return (
     <div className="focus-timer">
       <input
@@ -56,15 +73,11 @@ const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
         disabled={isRunning || showLevelSelector}
       />
 
-      <select
-        value={priority}
-        onChange={(e) => setPriority(e.target.value as TaskPriority)}
-        disabled={isRunning || showLevelSelector}
-      >
-        <option value="High">High Priority</option>
-        <option value="Medium">Medium Priority</option>
-        <option value="Low">Low Priority</option>
-      </select>
+      <Dropdown overlay={menu} disabled={isRunning || showLevelSelector}>
+        <Button>
+          {priority} Priority <DownOutlined />
+        </Button>
+      </Dropdown>
 
       <h2>
         {String(Math.floor(seconds / 60)).padStart(2, "0")}:

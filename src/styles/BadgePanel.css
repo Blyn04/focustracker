@@ -47,3 +47,23 @@
   margin-right: auto;
   background: #f9f9f9;
 }
+
+.badge-panel {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.ant-card.earned {
+  background-color: gold;
+  color: black;
+}
+
+.ant-card.locked {
+  background-color: #ddd;
+  color: grey;
+  cursor: not-allowed;
+}
+
+.ant-card.locked:hover {
+  transform: none !important;
+}

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Modal, Card, Row, Col, Button } from "antd";
 import "../styles/BadgePanel.css";
 
 interface Badge {
@@ -19,7 +20,7 @@ const ALL_BADGES: Omit<Badge, "earned">[] = [
 ];
 
 const BadgePanel: React.FC<BadgePanelProps> = ({ earnedBadges }) => {
-  const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const badges: Badge[] = ALL_BADGES.map((b) => ({
     ...b,
@@ -28,28 +29,39 @@ const BadgePanel: React.FC<BadgePanelProps> = ({ earnedBadges }) => {
 
   return (
     <div className="badge-panel">
-      <h3>🏆 Achievements</h3>
-      <div className="badge-grid">
-        {badges.map((badge) => (
-          <div
-            key={badge.id}
-            className={`badge ${badge.earned ? "earned" : "locked"}`}
-            onClick={() => setSelectedBadge(badge)}
-          >
-            <span role="img" aria-label="badge">🏅</span>
-            <p>{badge.name}</p>
-          </div>
-        ))}
-      </div>
+      <Button type="primary" onClick={() => setIsModalVisible(true)}>
+        🏆 Achievements
+      </Button>
 
-      {selectedBadge && (
-        <div className="badge-info">
-          <h4>{selectedBadge.name}</h4>
-          <p>{selectedBadge.description}</p>
-          {!selectedBadge.earned && <p style={{ color: "grey" }}>Not achieved yet</p>}
-          <button onClick={() => setSelectedBadge(null)}>Close</button>
-        </div>
-      )}
+      <Modal
+        title="Achievements"
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+      >
+        <Row gutter={[16, 16]}>
+          {badges.map((badge) => (
+            <Col key={badge.id} xs={24} sm={12} md={8}>
+              <Card
+                hoverable={badge.earned}
+                className={badge.earned ? "earned" : "locked"}
+                onClick={() =>
+                  badge.earned
+                    ? Modal.info({
+                        title: badge.name,
+                        content: <p>{badge.description}</p>,
+                        okText: "Close",
+                      })
+                    : null
+                }
+              >
+                <div style={{ textAlign: "center", fontSize: "1.5rem" }}>🏅</div>
+                <div style={{ textAlign: "center", marginTop: "0.5rem" }}>{badge.name}</div>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </Modal>
     </div>
   );
 };

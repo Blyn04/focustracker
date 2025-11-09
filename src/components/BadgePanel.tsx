@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Card, Row, Col, Button } from "antd";
+import { Modal, Card, Row, Col } from "antd";
 import "../styles/BadgePanel.css";
 
 interface Badge {
@@ -11,6 +11,8 @@ interface Badge {
 
 interface BadgePanelProps {
   earnedBadges: string[];
+  visible: boolean;
+  onClose: () => void;
 }
 
 const ALL_BADGES: Omit<Badge, "earned">[] = [
@@ -19,50 +21,37 @@ const ALL_BADGES: Omit<Badge, "earned">[] = [
   { id: "5SessionsDay", name: "5 Sessions in a Day", description: "Complete 5 sessions in one day" },
 ];
 
-const BadgePanel: React.FC<BadgePanelProps> = ({ earnedBadges }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
+const BadgePanel: React.FC<BadgePanelProps> = ({ earnedBadges, visible, onClose }) => {
   const badges: Badge[] = ALL_BADGES.map((b) => ({
     ...b,
     earned: earnedBadges.includes(b.name),
   }));
 
   return (
-    <div className="badge-panel">
-      <Button type="primary" onClick={() => setIsModalVisible(true)}>
-        🏆 Achievements
-      </Button>
-
-      <Modal
-        title="Achievements"
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-      >
-        <Row gutter={[16, 16]}>
-          {badges.map((badge) => (
-            <Col key={badge.id} xs={24} sm={12} md={8}>
-              <Card
-                hoverable={badge.earned}
-                className={badge.earned ? "earned" : "locked"}
-                onClick={() =>
-                  badge.earned
-                    ? Modal.info({
-                        title: badge.name,
-                        content: <p>{badge.description}</p>,
-                        okText: "Close",
-                      })
-                    : null
-                }
-              >
-                <div style={{ textAlign: "center", fontSize: "1.5rem" }}>🏅</div>
-                <div style={{ textAlign: "center", marginTop: "0.5rem" }}>{badge.name}</div>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </Modal>
-    </div>
+    <Modal title="Achievements" open={visible} onCancel={onClose} footer={null}>
+      <Row gutter={[16, 16]}>
+        {badges.map((badge) => (
+          <Col key={badge.id} xs={24} sm={12} md={8}>
+            <Card
+              hoverable={badge.earned}
+              className={badge.earned ? "earned" : "locked"}
+              onClick={() =>
+                badge.earned
+                  ? Modal.info({
+                      title: badge.name,
+                      content: <p>{badge.description}</p>,
+                      okText: "Close",
+                    })
+                  : null
+              }
+            >
+              <div style={{ textAlign: "center", fontSize: "1.5rem" }}>🏅</div>
+              <div style={{ textAlign: "center", marginTop: "0.5rem" }}>{badge.name}</div>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Modal>
   );
 };
 

@@ -7,12 +7,13 @@ import FocusCalendar from "./components/FocusCalendar";
 import Confetti from "react-confetti";
 import "./styles/App.css";
 import BadgePanel from "./components/BadgePanel";
+import Header from "./components/Header";
 
 interface FocusDay {
-  date: string; 
+  date: string;
   minutes: number;
   avgFocusLevel?: number;
-  sessions?: number; 
+  sessions?: number;
 }
 
 interface FocusData {
@@ -34,6 +35,7 @@ const App: React.FC = () => {
   const [history, setHistory] = useState<FocusDay[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
   const [earnedBadges, setEarnedBadges] = useState<string[]>([]);
+  const [showAchievements, setShowAchievements] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("focusData");
@@ -95,7 +97,6 @@ const App: React.FC = () => {
           existing.avgFocusLevel && level
             ? (existing.avgFocusLevel + level) / 2
             : level ?? existing.avgFocusLevel;
-
         return prev.map((h) =>
           h.date === todayStr
             ? {
@@ -106,7 +107,6 @@ const App: React.FC = () => {
               }
             : h
         );
-
       } else {
         return [
           ...prev,
@@ -122,11 +122,9 @@ const App: React.FC = () => {
     if (totalMinutes + minutes >= 100 && !earnedBadges.includes("100 Minutes Focus")) {
       newBadges.push("100 Minutes Focus");
     }
-
     if (newStreak >= 7 && !earnedBadges.includes("7-Day Streak")) {
       newBadges.push("7-Day Streak");
     }
-
     if (todaySessions >= 5 && !earnedBadges.includes("5 Sessions in a Day")) {
       newBadges.push("5 Sessions in a Day");
     }
@@ -144,15 +142,22 @@ const App: React.FC = () => {
       {!hasStarted ? (
         <LandingPage onStart={() => setHasStarted(true)} />
       ) : (
-        <div className="main-content">
-          <h1>🎯 Focus Tracker</h1>
-          <FocusTimer onSessionComplete={handleSessionComplete} />
-          <Stats totalMinutes={totalMinutes} streak={streak} />
-          <p className="last-saved">💾 Auto-saved: {lastSaved}</p>
-          <TaskList tasks={tasks} />
-          <FocusCalendar history={history} />
-          <BadgePanel earnedBadges={earnedBadges} />
-        </div>
+        <>
+          <Header onOpenAchievements={() => setShowAchievements(true)} />
+          <div className="main-content">
+            <FocusTimer onSessionComplete={handleSessionComplete} />
+            <Stats totalMinutes={totalMinutes} streak={streak} />
+            <p className="last-saved">💾 Auto-saved: {lastSaved}</p>
+            <TaskList tasks={tasks} />
+            <FocusCalendar history={history} />
+          </div>
+          
+          <BadgePanel
+            earnedBadges={earnedBadges}
+            visible={showAchievements}
+            onClose={() => setShowAchievements(false)}
+          />
+        </>
       )}
     </div>
   );

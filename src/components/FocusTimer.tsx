@@ -18,6 +18,7 @@ interface FocusTimerProps {
 function FocusTimer({ onSessionComplete }: FocusTimerProps) {
   const [seconds, setSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [task, setTask] = useState("");
   const [priority, setPriority] = useState<TaskPriority>("Medium");
   const [focusLevel, setFocusLevel] = useState<number | null>(null);
@@ -25,19 +26,24 @@ function FocusTimer({ onSessionComplete }: FocusTimerProps) {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (isRunning) {
+    if (isRunning && !isPaused) {
       timer = setInterval(() => setSeconds((prev) => prev + 1), 1000);
     }
     return () => clearInterval(timer);
-  }, [isRunning]);
+  }, [isRunning, isPaused]);
 
   const handleStop = () => {
     setIsRunning(false);
+    setIsPaused(false);
     if (!task.trim()) {
       alert("Please enter a task before starting!");
       return;
     }
     setShowLevelSelector(true);
+  };
+
+  const handlePause = () => {
+    setIsPaused((prev) => !prev);
   };
 
   const handleLevelSelect = (level: number) => {
@@ -96,12 +102,16 @@ function FocusTimer({ onSessionComplete }: FocusTimerProps) {
                   return;
                 }
                 setIsRunning(true);
+                setIsPaused(false);
               }}
             >
               Start
             </button>
           ) : (
-            <button onClick={handleStop}>Stop</button>
+            <>
+              <button onClick={handlePause}>{isPaused ? "Resume" : "Pause"}</button>
+              <button onClick={handleStop}>Stop</button>
+            </>
           )}
         </div>
       )}

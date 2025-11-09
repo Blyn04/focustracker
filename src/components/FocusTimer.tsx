@@ -72,19 +72,21 @@ function FocusTimer({ onSessionComplete }: FocusTimerProps) {
 
   return (
     <div className="focus-timer">
-      <input
-        type="text"
-        placeholder="Enter task..."
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
-        disabled={isRunning || showLevelSelector}
-      />
+      <div className="input-row">
+        <input
+          type="text"
+          placeholder="Enter task..."
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
+          disabled={isRunning || showLevelSelector}
+        />
 
-      <Dropdown overlay={menu} disabled={isRunning || showLevelSelector}>
-        <Button>
-          {priority} Priority <DownOutlined />
-        </Button>
-      </Dropdown>
+        <Dropdown overlay={menu} disabled={isRunning || showLevelSelector}>
+          <Button>
+            {priority} Priority <DownOutlined />
+          </Button>
+        </Dropdown>
+      </div>
 
       <h2>
         {String(Math.floor(seconds / 60)).padStart(2, "0")}:

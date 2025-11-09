@@ -20,18 +20,27 @@ function TaskList({ tasks }: TaskListProps) {
 
   return (
     <div className="task-list">
-      <h3>Completed Tasks</h3>
+      <h3>✅ Completed Tasks</h3>
       {sortedTasks.length > 0 ? (
         <ul>
           {sortedTasks.map((task, index) => (
             <li key={index}>
-              {task.name} <strong>({task.priority})</strong>{" "}
-              {task.focusLevel !== undefined && `- Focus: ${task.focusLevel}`}
+              <span>{task.name}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <span className={`priority-badge priority-${task.priority}`}>
+                  {task.priority}
+                </span>
+                {task.focusLevel !== undefined && (
+                  <span className="focus-level">⭐ {task.focusLevel}</span>
+                )}
+              </div>
             </li>
           ))}
         </ul>
       ) : (
-        <p>No tasks yet. Start focusing!</p>
+        <p style={{ color: "#888", textAlign: "center", marginTop: "1rem" }}>
+          No tasks yet. Start focusing!
+        </p>
       )}
     </div>
   );

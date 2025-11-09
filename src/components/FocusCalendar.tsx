@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Calendar, Tooltip, Modal } from "antd";
+import { Calendar, Tooltip, Modal, Tag } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import "antd/dist/reset.css";
+import "../styles/FocusCalendar.css"
 
 export interface FocusDay {
   date: string;
@@ -15,7 +16,7 @@ interface FocusCalendarProps {
   history: FocusDay[];
 }
 
-function FocusCalendar({ history }: FocusCalendarProps) {
+const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
   const [selectedDay, setSelectedDay] = useState<FocusDay | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -24,11 +25,13 @@ function FocusCalendar({ history }: FocusCalendarProps) {
     return history.find((h) => h.date === dateStr);
   };
 
+  // Gradient: green (low focus) → orange → red (high focus)
   const getHeatColor = (minutes: number) => {
     const max = 120;
-    const intensity = Math.min(minutes / max, 1);
-    const green = Math.floor(255 - intensity * 155);
-    return `rgb(${green},255,${green})`;
+    const ratio = Math.min(minutes / max, 1);
+    const r = Math.floor(255 * ratio);
+    const g = Math.floor(200 - ratio * 120);
+    return `rgb(${r}, ${g}, 100)`;
   };
 
   const dateCellRender = (value: Dayjs) => {
@@ -36,21 +39,16 @@ function FocusCalendar({ history }: FocusCalendarProps) {
     if (!data) return null;
 
     const tooltipText = `${data.minutes} min${
-      data.avgFocusLevel ? `, Focus Level: ${data.avgFocusLevel}` : ""
+      data.avgFocusLevel ? `, Focus: ${data.avgFocusLevel}` : ""
     }`;
 
     return (
       <Tooltip title={tooltipText}>
         <div
+          className="focus-day-cell"
           style={{
-            textAlign: "center",
-            width: "100%",
-            height: "100%",
-            lineHeight: "32px",
-            borderRadius: "4px",
             backgroundColor: getHeatColor(data.minutes),
-            cursor: "pointer",
-            color: data.minutes > 60 ? "#fff" : "#000",
+            color: data.minutes > 60 ? "#fff" : "#222",
           }}
           onClick={() => {
             setSelectedDay(data);
@@ -89,50 +87,60 @@ function FocusCalendar({ history }: FocusCalendarProps) {
   };
 
   return (
-    <div
-      className="focus-calendar-wrapper"
-      style={{
-        marginTop: "2rem",
-        width: "500px",
-        height: "550px",
-      }}
-    >
-      <h3 style={{ textAlign: "center" }}>📅 Focus Calendar</h3>
+    <div className="focus-calendar-card">
+      <h2>📅 Focus Calendar</h2>
+
       <Calendar
         dateCellRender={dateCellRender}
         fullscreen={false}
-        onPanelChange={() => {}}
+        className="focus-calendar"
       />
 
-      <div style={{ marginTop: "1rem", textAlign: "center" }}>
-        <strong>Week Total:</strong> {getWeekTotal(dayjs()).toLocaleString()} min |{" "}
-        <strong>Month Total:</strong> {getMonthTotal(dayjs()).toLocaleString()} min
+      <div className="focus-summary">
+        <Tag color="green">
+          Week Total: {getWeekTotal(dayjs()).toLocaleString()} min
+        </Tag>
+        <Tag color="blue">
+          Month Total: {getMonthTotal(dayjs()).toLocaleString()} min
+        </Tag>
       </div>
 
       <Modal
-        title={selectedDay?.date}
+        title={`Focus Details - ${selectedDay?.date}`}
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
+        className="focus-modal"
       >
-        {selectedDay?.taskDetails && selectedDay.taskDetails.length > 0 ? (
-          <ul>
+        {selectedDay?.taskDetails?.length ? (
+          <ul className="focus-task-list">
             {selectedDay.taskDetails.map((t, i) => (
               <li key={i}>
-                {t.task} - {t.minutes} min
-                {t.focusLevel !== undefined ? ` (Focus: ${t.focusLevel})` : ""}
+                <span>{t.task}</span>
+                <span>
+                  {t.minutes} min{" "}
+                  {t.focusLevel !== undefined && (
+                    <Tag color="gold">Focus {t.focusLevel}</Tag>
+                  )}
+                </span>
               </li>
             ))}
           </ul>
         ) : (
-          <p>No session details for this day.</p>
+          <p className="no-data">No session details for this day.</p>
         )}
-        <p>
-          Total Minutes: {selectedDay?.minutes} | Sessions: {selectedDay?.sessions || 1}
-        </p>
+
+        <div className="focus-modal-footer">
+          <p>
+            <strong>Total:</strong> {selectedDay?.minutes} min
+          </p>
+          <p>
+            <strong>Sessions:</strong> {selectedDay?.sessions || 1}
+          </p>
+        </div>
       </Modal>
     </div>
   );
-}
+};
 
 export default FocusCalendar;

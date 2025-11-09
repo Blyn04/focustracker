@@ -37,6 +37,7 @@ const App: React.FC = () => {
   const [earnedBadges, setEarnedBadges] = useState<string[]>([]);
   const [showAchievements, setShowAchievements] = useState(false);
 
+  // ✅ Load saved data
   useEffect(() => {
     const saved = localStorage.getItem("focusData");
     if (saved) {
@@ -50,6 +51,7 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // ✅ Auto-save data
   useEffect(() => {
     const saveData: FocusData = {
       totalMinutes,
@@ -63,6 +65,7 @@ const App: React.FC = () => {
     setLastSaved(saveData.lastSaved || "");
   }, [totalMinutes, tasks, streak, lastFocusDate, history]);
 
+  // ✅ Handle focus session complete
   const handleSessionComplete = (
     minutes: number,
     taskName: string,
@@ -85,11 +88,13 @@ const App: React.FC = () => {
     setStreak(newStreak);
     setLastFocusDate(today.toDateString());
 
+    // ✅ Update tasks
     setTasks((prev) => [
       ...prev,
       { name: taskName, priority, focusLevel: level, date: todayStr },
     ]);
 
+    // ✅ Update history
     setHistory((prev) => {
       const existing = prev.find((h) => h.date === todayStr);
       if (existing) {
@@ -115,6 +120,7 @@ const App: React.FC = () => {
       }
     });
 
+    // ✅ Badge logic
     const todaySessions =
       (history.find((h) => h.date === todayStr)?.sessions || 0) + 1;
     const newBadges: string[] = [];
@@ -143,7 +149,9 @@ const App: React.FC = () => {
         <LandingPage onStart={() => setHasStarted(true)} />
       ) : (
         <>
-          <Header onOpenAchievements={() => setShowAchievements(true)} />
+          {/* ✅ Modern Header with nice UI */}
+          <Header onShowBadges={() => setShowAchievements(true)} />
+
           <div className="main-content">
             <FocusTimer onSessionComplete={handleSessionComplete} />
             <Stats totalMinutes={totalMinutes} streak={streak} />
@@ -151,7 +159,8 @@ const App: React.FC = () => {
             <TaskList tasks={tasks} />
             <FocusCalendar history={history} />
           </div>
-          
+
+          {/* ✅ Badge Modal Panel */}
           <BadgePanel
             earnedBadges={earnedBadges}
             visible={showAchievements}

@@ -1,21 +1,27 @@
 import React from "react";
-import { Button } from "antd";
 import "../styles/Header.css";
 
 interface HeaderProps {
-  onOpenAchievements: () => void;
+  onShowBadges: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onOpenAchievements }) => {
+const Header: React.FC<HeaderProps> = ({ onShowBadges }) => {
   return (
-    <header className="app-header">
+    <header className="header">
       <div className="logo">
-        🎯 <span>Focus Tracker</span>
+        <span className="focus-icon">🎯</span>
+        <h1 className="title">Focus Tracker</h1>
       </div>
-      <nav className="header-actions">
-        <Button type="primary" onClick={onOpenAchievements}>
+      <nav className="nav-buttons">
+        <button className="nav-btn" onClick={onShowBadges}>
           🏆 Achievements
-        </Button>
+        </button>
+        <button className="nav-btn">
+          📊 Stats
+        </button>
+        <button className="nav-btn">
+          ⚙️ Settings
+        </button>
       </nav>
     </header>
   );

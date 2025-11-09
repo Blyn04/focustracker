@@ -47,7 +47,8 @@ function FocusTimer({ onSessionComplete }: FocusTimerProps) {
   };
 
   const handleLevelSelect = (level: number) => {
-    const minutes = Math.max(1, Math.floor(seconds / 60));
+    // Calculate minutes more accurately
+    const minutes = seconds / 60; // float value for partial minutes
     setFocusLevel(level);
 
     onSessionComplete(minutes, task.trim(), priority, level);

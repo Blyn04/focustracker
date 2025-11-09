@@ -5,7 +5,7 @@ interface HeaderProps {
   onShowBadges: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onShowBadges }) => {
+function Header({ onShowBadges }: HeaderProps) {
   return (
     <header className="header">
       <div className="logo">
@@ -25,6 +25,6 @@ const Header: React.FC<HeaderProps> = ({ onShowBadges }) => {
       </nav>
     </header>
   );
-};
+}
 
 export default Header;

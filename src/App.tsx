@@ -25,7 +25,7 @@ interface FocusData {
   lastSaved?: string;
 }
 
-const App: React.FC = () => {
+function App() {
   const [hasStarted, setHasStarted] = useState(false);
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [tasks, setTasks] = useState<TaskItem[]>([]);
@@ -37,7 +37,7 @@ const App: React.FC = () => {
   const [earnedBadges, setEarnedBadges] = useState<string[]>([]);
   const [showAchievements, setShowAchievements] = useState(false);
 
-  // ✅ Load saved data
+  // Load saved data
   useEffect(() => {
     const saved = localStorage.getItem("focusData");
     if (saved) {
@@ -51,7 +51,7 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // ✅ Auto-save data
+  // Auto-save data
   useEffect(() => {
     const saveData: FocusData = {
       totalMinutes,
@@ -65,7 +65,7 @@ const App: React.FC = () => {
     setLastSaved(saveData.lastSaved || "");
   }, [totalMinutes, tasks, streak, lastFocusDate, history]);
 
-  // ✅ Handle focus session complete
+  // Handle focus session complete
   const handleSessionComplete = (
     minutes: number,
     taskName: string,
@@ -88,13 +88,13 @@ const App: React.FC = () => {
     setStreak(newStreak);
     setLastFocusDate(today.toDateString());
 
-    // ✅ Update tasks
+    // Update tasks
     setTasks((prev) => [
       ...prev,
       { name: taskName, priority, focusLevel: level, date: todayStr },
     ]);
 
-    // ✅ Update history
+    // Update history
     setHistory((prev) => {
       const existing = prev.find((h) => h.date === todayStr);
       if (existing) {
@@ -120,7 +120,7 @@ const App: React.FC = () => {
       }
     });
 
-    // ✅ Badge logic
+    // Badge logic
     const todaySessions =
       (history.find((h) => h.date === todayStr)?.sessions || 0) + 1;
     const newBadges: string[] = [];
@@ -149,7 +149,6 @@ const App: React.FC = () => {
         <LandingPage onStart={() => setHasStarted(true)} />
       ) : (
         <>
-          {/* ✅ Modern Header with nice UI */}
           <Header onShowBadges={() => setShowAchievements(true)} />
 
           <div className="main-content">
@@ -160,7 +159,6 @@ const App: React.FC = () => {
             <FocusCalendar history={history} />
           </div>
 
-          {/* ✅ Badge Modal Panel */}
           <BadgePanel
             earnedBadges={earnedBadges}
             visible={showAchievements}
@@ -170,6 +168,6 @@ const App: React.FC = () => {
       )}
     </div>
   );
-};
+}
 
 export default App;

@@ -15,7 +15,7 @@ interface FocusTimerProps {
   ) => void;
 }
 
-const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
+function FocusTimer({ onSessionComplete }: FocusTimerProps) {
   const [seconds, setSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [task, setTask] = useState("");
@@ -107,6 +107,6 @@ const FocusTimer: React.FC<FocusTimerProps> = ({ onSessionComplete }) => {
       )}
     </div>
   );
-};
+}
 
 export default FocusTimer;

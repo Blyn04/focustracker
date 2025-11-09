@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Modal, Card, Row, Col } from "antd";
 import "../styles/BadgePanel.css";
 
@@ -21,7 +21,7 @@ const ALL_BADGES: Omit<Badge, "earned">[] = [
   { id: "5SessionsDay", name: "5 Sessions in a Day", description: "Complete 5 sessions in one day" },
 ];
 
-const BadgePanel: React.FC<BadgePanelProps> = ({ earnedBadges, visible, onClose }) => {
+function BadgePanel({ earnedBadges, visible, onClose }: BadgePanelProps) {
   const badges: Badge[] = ALL_BADGES.map((b) => ({
     ...b,
     earned: earnedBadges.includes(b.name),
@@ -53,6 +53,6 @@ const BadgePanel: React.FC<BadgePanelProps> = ({ earnedBadges, visible, onClose 
       </Row>
     </Modal>
   );
-};
+}
 
 export default BadgePanel;

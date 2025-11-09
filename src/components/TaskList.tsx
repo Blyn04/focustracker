@@ -5,14 +5,14 @@ export interface TaskItem {
   name: string;
   priority: "High" | "Medium" | "Low";
   focusLevel?: number;
-  date?: string; 
+  date?: string;
 }
 
 interface TaskListProps {
   tasks: TaskItem[];
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
+function TaskList({ tasks }: TaskListProps) {
   const sortedTasks = [...tasks].sort((a, b) => {
     const order = { High: 3, Medium: 2, Low: 1 };
     return (order[b.priority] || 0) - (order[a.priority] || 0);
@@ -35,6 +35,6 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
       )}
     </div>
   );
-};
+}
 
 export default TaskList;

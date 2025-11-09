@@ -5,7 +5,7 @@ interface LandingPageProps {
   onStart: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
+function LandingPage({ onStart }: LandingPageProps) {
   return (
     <div className="landing-container">
       <div className="landing-content">
@@ -20,6 +20,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
       </div>
     </div>
   );
-};
+}
 
 export default LandingPage;

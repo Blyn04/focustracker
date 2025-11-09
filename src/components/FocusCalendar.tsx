@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { Calendar, Badge, Tooltip, Modal } from "antd";
+import { Calendar, Tooltip, Modal } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import "antd/dist/reset.css";
 
-interface FocusDay {
+export interface FocusDay {
   date: string;
   minutes: number;
   avgFocusLevel?: number;
-  sessions?: number; // optional: number of sessions that day
+  sessions?: number;
   taskDetails?: { task: string; minutes: number; focusLevel?: number }[];
 }
 
@@ -15,7 +15,7 @@ interface FocusCalendarProps {
   history: FocusDay[];
 }
 
-const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
+function FocusCalendar({ history }: FocusCalendarProps) {
   const [selectedDay, setSelectedDay] = useState<FocusDay | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -25,7 +25,6 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
   };
 
   const getHeatColor = (minutes: number) => {
-    // Simple gradient: 0 = light gray, 120+ = dark green
     const max = 120;
     const intensity = Math.min(minutes / max, 1);
     const green = Math.floor(255 - intensity * 155);
@@ -106,9 +105,8 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
       />
 
       <div style={{ marginTop: "1rem", textAlign: "center" }}>
-        <strong>Week Total:</strong>{" "}
-        {getWeekTotal(dayjs()).toLocaleString()} min | <strong>Month Total:</strong>{" "}
-        {getMonthTotal(dayjs()).toLocaleString()} min
+        <strong>Week Total:</strong> {getWeekTotal(dayjs()).toLocaleString()} min |{" "}
+        <strong>Month Total:</strong> {getMonthTotal(dayjs()).toLocaleString()} min
       </div>
 
       <Modal
@@ -135,6 +133,6 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
       </Modal>
     </div>
   );
-};
+}
 
 export default FocusCalendar;

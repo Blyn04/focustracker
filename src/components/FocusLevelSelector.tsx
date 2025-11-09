@@ -5,7 +5,7 @@ interface FocusLevelSelectorProps {
   onSelect: (level: number) => void;
 }
 
-const FocusLevelSelector: React.FC<FocusLevelSelectorProps> = ({ onSelect }) => {
+function FocusLevelSelector({ onSelect }: FocusLevelSelectorProps) {
   const [selected, setSelected] = useState<number | null>(null);
 
   const handleSelect = (level: number) => {
@@ -29,6 +29,6 @@ const FocusLevelSelector: React.FC<FocusLevelSelectorProps> = ({ onSelect }) => 
       </div>
     </div>
   );
-};
+}
 
 export default FocusLevelSelector;

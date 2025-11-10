@@ -1,49 +1,32 @@
-import React from "react";
-import "../styles/TaskList.css";
+import React, { useState, useRef } from "react";
+import "../styles/BackgroundMusic.css";
 
-export interface TaskItem {
-  name: string;
-  priority: "High" | "Medium" | "Low";
-  focusLevel?: number;
-  date?: string;
+interface BackgroundMusicProps {
+  src: string; // audio file URL
 }
 
-interface TaskListProps {
-  tasks: TaskItem[];
-}
+const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-function BackgroundMusic({ tasks }: TaskListProps) {
-  const sortedTasks = [...tasks].sort((a, b) => {
-    const order = { High: 3, Medium: 2, Low: 1 };
-    return (order[b.priority] || 0) - (order[a.priority] || 0);
-  });
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
 
   return (
-    <div className="task-list">
-      <h3>✅ Completed Tasks</h3>
-      {sortedTasks.length > 0 ? (
-        <ul>
-          {sortedTasks.map((task, index) => (
-            <li key={index}>
-              <span>{task.name}</span>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <span className={`priority-badge priority-${task.priority}`}>
-                  {task.priority}
-                </span>
-                {task.focusLevel !== undefined && (
-                  <span className="focus-level">⭐ {task.focusLevel}</span>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p style={{ color: "#888", textAlign: "center", marginTop: "1rem" }}>
-          No tasks yet. Start focusing!
-        </p>
-      )}
+    <div className="bg-music-container">
+      <audio ref={audioRef} loop src={src} />
+      <button className="bg-music-btn" onClick={togglePlay}>
+        {isPlaying ? "⏸ Pause Music" : "▶️ Play Music"}
+      </button>
     </div>
   );
-}
+};
 
 export default BackgroundMusic;

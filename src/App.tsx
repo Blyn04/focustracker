@@ -39,6 +39,10 @@ function App() {
   const [pendingTasks, setPendingTasks] = useState<TaskItem[]>([]);
   const [activeTask, setActiveTask] = useState<string | null>(null);
 
+  // Modal state for removing pending task
+  const [modalVisible, setModalVisible] = useState(false);
+  const [taskToRemove, setTaskToRemove] = useState<string | null>(null);
+
   // Load saved data
   useEffect(() => {
     const saved = localStorage.getItem("focusData");
@@ -142,6 +146,29 @@ function App() {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 3000);
     }
+
+    // Remove completed task from pending & clear active task
+    setPendingTasks((prev) => prev.filter((t) => t.name !== taskName));
+    setActiveTask(null);
+  };
+
+  // Modal handlers
+  const handleRemovePendingClick = (taskName: string) => {
+    setTaskToRemove(taskName);
+    setModalVisible(true);
+  };
+
+  const confirmRemovePending = () => {
+    if (taskToRemove) {
+      setPendingTasks((prev) => prev.filter((t) => t.name !== taskToRemove));
+    }
+    setTaskToRemove(null);
+    setModalVisible(false);
+  };
+
+  const cancelRemovePending = () => {
+    setTaskToRemove(null);
+    setModalVisible(false);
   };
 
   return (
@@ -155,13 +182,7 @@ function App() {
 
           <div className="main-content">
             <FocusTimer
-              onSessionComplete={(minutes, taskName, priority, level) => {
-                handleSessionComplete(minutes, taskName, priority, level);
-
-                // REMOVE task from pending and clear active task
-                setPendingTasks((prev) => prev.filter((t) => t.name !== taskName));
-                setActiveTask(null);
-              }}
+              onSessionComplete={handleSessionComplete}
               onAddTask={(task, priority) =>
                 setPendingTasks((prev) => [...prev, { name: task, priority }])
               }
@@ -172,13 +193,10 @@ function App() {
               tasks={tasks}
               pendingTasks={pendingTasks}
               onStartTask={(taskName) => setActiveTask(taskName)}
-              onRemovePending={(taskName) =>
-                setPendingTasks((prev) => prev.filter((t) => t.name !== taskName))
-              }
+              onRemovePending={handleRemovePendingClick} // pass modal trigger
             />
 
             <Stats totalMinutes={totalMinutes} streak={streak} />
-
             <FocusCalendar history={history} />
           </div>
 
@@ -187,6 +205,23 @@ function App() {
             visible={showAchievements}
             onClose={() => setShowAchievements(false)}
           />
+
+          {/* Global Modal */}
+          {modalVisible && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <p>Are you sure you want to remove "{taskToRemove}"?</p>
+                <div className="modal-buttons">
+                  <button className="confirm-btn" onClick={confirmRemovePending}>
+                    Yes
+                  </button>
+                  <button className="cancel-btn" onClick={cancelRemovePending}>
+                    No
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>

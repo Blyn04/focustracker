@@ -12,7 +12,7 @@ interface TaskListProps {
   tasks: TaskItem[];
   pendingTasks: TaskItem[];
   onStartTask: (taskName: string) => void;
-  onRemovePending?: (taskName: string) => void; // new prop
+  onRemovePending?: (taskName: string) => void; // callback to App modal
 }
 
 function TaskList({ tasks, pendingTasks, onStartTask, onRemovePending }: TaskListProps) {
@@ -45,7 +45,7 @@ function TaskList({ tasks, pendingTasks, onStartTask, onRemovePending }: TaskLis
                 {onRemovePending && (
                   <button
                     className="remove-btn"
-                    onClick={() => onRemovePending(task.name)}
+                    onClick={() => onRemovePending(task.name)} // triggers App modal
                   >
                     ✖
                   </button>

@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import "../styles/BackgroundMusic.css";
 
 interface BackgroundMusicProps {
-  src: string; // audio file URL
+  src: string; 
 }
 
 const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {

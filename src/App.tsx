@@ -38,12 +38,9 @@ function App() {
   const [showAchievements, setShowAchievements] = useState(false);
   const [pendingTasks, setPendingTasks] = useState<TaskItem[]>([]);
   const [activeTask, setActiveTask] = useState<string | null>(null);
-
-  // Modal state for removing pending task
   const [modalVisible, setModalVisible] = useState(false);
   const [taskToRemove, setTaskToRemove] = useState<string | null>(null);
 
-  // Load saved data
   useEffect(() => {
     const saved = localStorage.getItem("focusData");
     if (saved) {
@@ -57,7 +54,6 @@ function App() {
     }
   }, []);
 
-  // Auto-save data
   useEffect(() => {
     const saveData: FocusData = {
       totalMinutes,
@@ -67,11 +63,11 @@ function App() {
       history,
       lastSaved: new Date().toLocaleString(),
     };
+
     localStorage.setItem("focusData", JSON.stringify(saveData));
     setLastSaved(saveData.lastSaved || "");
   }, [totalMinutes, tasks, streak, lastFocusDate, history]);
 
-  // Handle focus session complete
   const handleSessionComplete = (
     minutes: number,
     taskName: string,
@@ -94,13 +90,11 @@ function App() {
     setStreak(newStreak);
     setLastFocusDate(today.toDateString());
 
-    // Update tasks
     setTasks((prev) => [
       ...prev,
       { name: taskName, priority, focusLevel: level, date: todayStr },
     ]);
 
-    // Update history
     setHistory((prev) => {
       const existing = prev.find((h) => h.date === todayStr);
       if (existing) {
@@ -118,6 +112,7 @@ function App() {
               }
             : h
         );
+
       } else {
         return [
           ...prev,
@@ -126,7 +121,6 @@ function App() {
       }
     });
 
-    // Badge logic
     const todaySessions =
       (history.find((h) => h.date === todayStr)?.sessions || 0) + 1;
     const newBadges: string[] = [];
@@ -134,9 +128,11 @@ function App() {
     if (totalMinutes + minutes >= 100 && !earnedBadges.includes("100 Minutes Focus")) {
       newBadges.push("100 Minutes Focus");
     }
+
     if (newStreak >= 7 && !earnedBadges.includes("7-Day Streak")) {
       newBadges.push("7-Day Streak");
     }
+    
     if (todaySessions >= 5 && !earnedBadges.includes("5 Sessions in a Day")) {
       newBadges.push("5 Sessions in a Day");
     }
@@ -147,12 +143,10 @@ function App() {
       setTimeout(() => setShowConfetti(false), 3000);
     }
 
-    // Remove completed task from pending & clear active task
     setPendingTasks((prev) => prev.filter((t) => t.name !== taskName));
     setActiveTask(null);
   };
 
-  // Modal handlers
   const handleRemovePendingClick = (taskName: string) => {
     setTaskToRemove(taskName);
     setModalVisible(true);
@@ -193,7 +187,7 @@ function App() {
               tasks={tasks}
               pendingTasks={pendingTasks}
               onStartTask={(taskName) => setActiveTask(taskName)}
-              onRemovePending={handleRemovePendingClick} // pass modal trigger
+              onRemovePending={handleRemovePendingClick} 
             />
 
             <Stats totalMinutes={totalMinutes} streak={streak} />
@@ -206,7 +200,6 @@ function App() {
             onClose={() => setShowAchievements(false)}
           />
 
-          {/* Global Modal */}
           {modalVisible && (
             <div className="modal-overlay">
               <div className="modal">

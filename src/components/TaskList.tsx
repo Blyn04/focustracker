@@ -12,9 +12,10 @@ interface TaskListProps {
   tasks: TaskItem[];
   pendingTasks: TaskItem[];
   onStartTask: (taskName: string) => void;
+  onRemovePending?: (taskName: string) => void; // new prop
 }
 
-function TaskList({ tasks, pendingTasks, onStartTask }: TaskListProps) {
+function TaskList({ tasks, pendingTasks, onStartTask, onRemovePending }: TaskListProps) {
   const sortByPriority = (a: TaskItem, b: TaskItem) => {
     const order = { High: 3, Medium: 2, Low: 1 };
     return (order[b.priority] || 0) - (order[a.priority] || 0);
@@ -41,6 +42,14 @@ function TaskList({ tasks, pendingTasks, onStartTask }: TaskListProps) {
                 >
                   ▶ Start
                 </button>
+                {onRemovePending && (
+                  <button
+                    className="remove-btn"
+                    onClick={() => onRemovePending(task.name)}
+                  >
+                    ✖
+                  </button>
+                )}
               </div>
             </li>
           ))}

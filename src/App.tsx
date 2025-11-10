@@ -172,6 +172,9 @@ function App() {
               tasks={tasks}
               pendingTasks={pendingTasks}
               onStartTask={(taskName) => setActiveTask(taskName)}
+              onRemovePending={(taskName) =>
+                setPendingTasks((prev) => prev.filter((t) => t.name !== taskName))
+              }
             />
 
             <Stats totalMinutes={totalMinutes} streak={streak} />

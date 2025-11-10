@@ -57,8 +57,16 @@ function FocusTimer({ onSessionComplete, onAddTask, activeTask }: FocusTimerProp
   const handleLevelSelect = (level: number) => {
     const minutes = seconds / 60;
     setFocusLevel(level);
-    onSessionComplete(minutes, activeTask || "", priority, level);
+    
+    if (activeTask) {
+      // Notify parent that session is complete
+      onSessionComplete(minutes, activeTask, priority, level);
+    }
+
+    // RESET everything
     setSeconds(0);
+    setIsRunning(false);
+    setIsPaused(false);
     setFocusLevel(null);
     setShowLevelSelector(false);
   };

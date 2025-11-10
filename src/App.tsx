@@ -155,19 +155,26 @@ function App() {
 
           <div className="main-content">
             <FocusTimer
-              onSessionComplete={handleSessionComplete}
+              onSessionComplete={(minutes, taskName, priority, level) => {
+                handleSessionComplete(minutes, taskName, priority, level);
+
+                // REMOVE task from pending and clear active task
+                setPendingTasks((prev) => prev.filter((t) => t.name !== taskName));
+                setActiveTask(null);
+              }}
               onAddTask={(task, priority) =>
                 setPendingTasks((prev) => [...prev, { name: task, priority }])
               }
-              activeTask={activeTask ?? undefined} // <<< fix here
+              activeTask={activeTask ?? undefined}
             />
-            <Stats totalMinutes={totalMinutes} streak={streak} />
-            <p className="last-saved">💾 Auto-saved: {lastSaved}</p>
+
             <TaskList
               tasks={tasks}
               pendingTasks={pendingTasks}
               onStartTask={(taskName) => setActiveTask(taskName)}
             />
+
+            <Stats totalMinutes={totalMinutes} streak={streak} />
 
             <FocusCalendar history={history} />
           </div>

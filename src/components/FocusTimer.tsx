@@ -13,9 +13,11 @@ interface FocusTimerProps {
     priority: TaskPriority,
     level?: number
   ) => void;
+  onAddTask: (task: string, priority: TaskPriority) => void; // 👈 NEW PROP
+  activeTask?: string; // 👈 Optional active task name
 }
 
-function FocusTimer({ onSessionComplete }: FocusTimerProps) {
+function FocusTimer({ onSessionComplete, onAddTask, activeTask }: FocusTimerProps) {
   const [seconds, setSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -24,6 +26,7 @@ function FocusTimer({ onSessionComplete }: FocusTimerProps) {
   const [focusLevel, setFocusLevel] = useState<number | null>(null);
   const [showLevelSelector, setShowLevelSelector] = useState(false);
 
+  // timer logic
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isRunning && !isPaused) {
@@ -32,30 +35,30 @@ function FocusTimer({ onSessionComplete }: FocusTimerProps) {
     return () => clearInterval(timer);
   }, [isRunning, isPaused]);
 
+  const handleAddTask = () => {
+    if (!task.trim()) {
+      alert("Please enter a task name!");
+      return;
+    }
+    onAddTask(task.trim(), priority);
+    setTask("");
+    setPriority("Medium");
+  };
+
   const handleStop = () => {
     setIsRunning(false);
     setIsPaused(false);
-    if (!task.trim()) {
-      alert("Please enter a task before starting!");
-      return;
-    }
+    if (!activeTask) return;
     setShowLevelSelector(true);
   };
 
-  const handlePause = () => {
-    setIsPaused((prev) => !prev);
-  };
+  const handlePause = () => setIsPaused((prev) => !prev);
 
   const handleLevelSelect = (level: number) => {
-    // Calculate minutes more accurately
-    const minutes = seconds / 60; // float value for partial minutes
+    const minutes = seconds / 60;
     setFocusLevel(level);
-
-    onSessionComplete(minutes, task.trim(), priority, level);
-
+    onSessionComplete(minutes, activeTask || "", priority, level);
     setSeconds(0);
-    setTask("");
-    setPriority("Medium");
     setFocusLevel(null);
     setShowLevelSelector(false);
   };
@@ -72,51 +75,54 @@ function FocusTimer({ onSessionComplete }: FocusTimerProps) {
 
   return (
     <div className="focus-timer">
-      <div className="input-row">
-        <input
-          type="text"
-          placeholder="Enter task..."
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
-          disabled={isRunning || showLevelSelector}
-        />
-
-        <Dropdown overlay={menu} disabled={isRunning || showLevelSelector}>
-          <Button>
-            {priority} Priority <DownOutlined />
-          </Button>
-        </Dropdown>
-      </div>
-
-      <h2>
-        {String(Math.floor(seconds / 60)).padStart(2, "0")}:
-        {String(seconds % 60).padStart(2, "0")}
-      </h2>
-
-      {showLevelSelector ? (
-        <FocusLevelSelector onSelect={handleLevelSelect} />
-      ) : (
-        <div className="timer-buttons">
-          {!isRunning ? (
-            <button
-              onClick={() => {
-                if (!task.trim()) {
-                  alert("Enter a task before starting!");
-                  return;
-                }
-                setIsRunning(true);
-                setIsPaused(false);
-              }}
-            >
-              Start
+      {!activeTask ? (
+        <>
+          <div className="input-row">
+            <input
+              type="text"
+              placeholder="Add a new task..."
+              value={task}
+              onChange={(e) => setTask(e.target.value)}
+              disabled={isRunning || showLevelSelector}
+            />
+            <Dropdown overlay={menu}>
+              <Button>
+                {priority} Priority <DownOutlined />
+              </Button>
+            </Dropdown>
+            <button className="add-task-btn" onClick={handleAddTask}>
+              + Add
             </button>
+          </div>
+          <p style={{ textAlign: "center", color: "#777" }}>
+            Select a task from your list to start focusing.
+          </p>
+        </>
+      ) : (
+        <>
+          <h3 style={{ textAlign: "center" }}>🎯 Focusing on: {activeTask}</h3>
+          <h2>
+            {String(Math.floor(seconds / 60)).padStart(2, "0")}:
+            {String(seconds % 60).padStart(2, "0")}
+          </h2>
+
+          {showLevelSelector ? (
+            <FocusLevelSelector onSelect={handleLevelSelect} />
           ) : (
-            <>
-              <button onClick={handlePause}>{isPaused ? "Resume" : "Pause"}</button>
-              <button onClick={handleStop}>Stop</button>
-            </>
+            <div className="timer-buttons">
+              {!isRunning ? (
+                <button onClick={() => setIsRunning(true)}>Start</button>
+              ) : (
+                <>
+                  <button onClick={handlePause}>
+                    {isPaused ? "Resume" : "Pause"}
+                  </button>
+                  <button onClick={handleStop}>Stop</button>
+                </>
+              )}
+            </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

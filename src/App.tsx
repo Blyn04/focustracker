@@ -36,6 +36,8 @@ function App() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [earnedBadges, setEarnedBadges] = useState<string[]>([]);
   const [showAchievements, setShowAchievements] = useState(false);
+  const [pendingTasks, setPendingTasks] = useState<TaskItem[]>([]);
+  const [activeTask, setActiveTask] = useState<string | null>(null);
 
   // Load saved data
   useEffect(() => {
@@ -152,10 +154,21 @@ function App() {
           <Header onShowBadges={() => setShowAchievements(true)} />
 
           <div className="main-content">
-            <FocusTimer onSessionComplete={handleSessionComplete} />
+            <FocusTimer
+              onSessionComplete={handleSessionComplete}
+              onAddTask={(task, priority) =>
+                setPendingTasks((prev) => [...prev, { name: task, priority }])
+              }
+              activeTask={activeTask ?? undefined} // <<< fix here
+            />
             <Stats totalMinutes={totalMinutes} streak={streak} />
             <p className="last-saved">💾 Auto-saved: {lastSaved}</p>
-            <TaskList tasks={tasks} />
+            <TaskList
+              tasks={tasks}
+              pendingTasks={pendingTasks}
+              onStartTask={(taskName) => setActiveTask(taskName)}
+            />
+
             <FocusCalendar history={history} />
           </div>
 

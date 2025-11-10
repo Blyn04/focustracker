@@ -10,23 +10,52 @@ export interface TaskItem {
 
 interface TaskListProps {
   tasks: TaskItem[];
+  pendingTasks: TaskItem[];
+  onStartTask: (taskName: string) => void;
 }
 
-function TaskList({ tasks }: TaskListProps) {
-  const sortedTasks = [...tasks].sort((a, b) => {
+function TaskList({ tasks, pendingTasks, onStartTask }: TaskListProps) {
+  const sortByPriority = (a: TaskItem, b: TaskItem) => {
     const order = { High: 3, Medium: 2, Low: 1 };
     return (order[b.priority] || 0) - (order[a.priority] || 0);
-  });
+  };
+
+  const sortedCompleted = [...tasks].sort(sortByPriority);
+  const sortedPending = [...pendingTasks].sort(sortByPriority);
 
   return (
     <div className="task-list">
-      <h3>✅ Completed Tasks</h3>
-      {sortedTasks.length > 0 ? (
+      <h3>🕒 Pending Tasks</h3>
+      {sortedPending.length > 0 ? (
         <ul>
-          {sortedTasks.map((task, index) => (
-            <li key={index}>
+          {sortedPending.map((task, index) => (
+            <li key={`pending-${index}`} className="task-item">
               <span>{task.name}</span>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <div className="task-right">
+                <span className={`priority-badge priority-${task.priority}`}>
+                  {task.priority}
+                </span>
+                <button
+                  className="start-btn"
+                  onClick={() => onStartTask(task.name)}
+                >
+                  ▶ Start
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="empty-text">No pending tasks. Add one to get started!</p>
+      )}
+
+      <h3>✅ Completed Tasks</h3>
+      {sortedCompleted.length > 0 ? (
+        <ul>
+          {sortedCompleted.map((task, index) => (
+            <li key={`done-${index}`} className="task-item">
+              <span>{task.name}</span>
+              <div className="task-right">
                 <span className={`priority-badge priority-${task.priority}`}>
                   {task.priority}
                 </span>
@@ -38,9 +67,7 @@ function TaskList({ tasks }: TaskListProps) {
           ))}
         </ul>
       ) : (
-        <p style={{ color: "#888", textAlign: "center", marginTop: "1rem" }}>
-          No tasks yet. Start focusing!
-        </p>
+        <p className="empty-text">No completed tasks yet.</p>
       )}
     </div>
   );

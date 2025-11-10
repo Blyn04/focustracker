@@ -17,7 +17,7 @@ interface FocusCalendarProps {
   history: FocusDay[];
 }
 
-const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
+function FocusCalendar({ history }: FocusCalendarProps) {
   const [selectedDay, setSelectedDay] = useState<FocusDay | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -44,16 +44,25 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
 
     const listData = [
       { type: "success", content: `${data.minutes} min` },
-      ...(data.avgFocusLevel ? [{ type: "warning", content: `Focus ${data.avgFocusLevel}` }] : []),
+      ...(data.avgFocusLevel
+        ? [{ type: "warning", content: `Focus ${data.avgFocusLevel}` }]
+        : []),
     ];
 
     return (
       <Tooltip title={tooltipText}>
-        <div style={{ position: "relative", width: "100%", height: "100%", cursor: "pointer" }}
-             onClick={() => {
-               setSelectedDay(data);
-               setIsModalVisible(true);
-             }}>
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            setSelectedDay(data);
+            setIsModalVisible(true);
+          }}
+        >
           {/* Heat overlay */}
           <div
             style={{
@@ -123,12 +132,8 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
       <Calendar cellRender={cellRender} fullscreen={false} className="focus-calendar" />
 
       <div className="focus-summary">
-        <Tag color="green">
-          Week Total: {getWeekTotal(dayjs()).toLocaleString()} min
-        </Tag>
-        <Tag color="blue">
-          Month Total: {getMonthTotal(dayjs()).toLocaleString()} min
-        </Tag>
+        <Tag color="green">Week Total: {getWeekTotal(dayjs()).toLocaleString()} min</Tag>
+        <Tag color="blue">Month Total: {getMonthTotal(dayjs()).toLocaleString()} min</Tag>
       </div>
 
       <Modal
@@ -165,6 +170,6 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
       </Modal>
     </div>
   );
-};
+}
 
 export default FocusCalendar;

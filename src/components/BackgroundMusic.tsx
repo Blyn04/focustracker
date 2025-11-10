@@ -2,10 +2,10 @@ import React, { useState, useRef } from "react";
 import "../styles/BackgroundMusic.css";
 
 interface BackgroundMusicProps {
-  src: string; 
+  src: string;
 }
 
-const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
+function BackgroundMusic({ src }: BackgroundMusicProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -27,6 +27,6 @@ const BackgroundMusic: React.FC<BackgroundMusicProps> = ({ src }) => {
       </button>
     </div>
   );
-};
+}
 
 export default BackgroundMusic;

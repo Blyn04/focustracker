@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Calendar, Tooltip, Modal, Tag } from "antd";
+import { Calendar, Tooltip, Modal, Tag, Badge } from "antd";
+import type { CalendarProps, BadgeProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import "antd/dist/reset.css";
-import "../styles/FocusCalendar.css"
+import "../styles/FocusCalendar.css";
 
 export interface FocusDay {
   date: string;
@@ -25,13 +26,12 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
     return history.find((h) => h.date === dateStr);
   };
 
-  // Gradient: green (low focus) → orange → red (high focus)
   const getHeatColor = (minutes: number) => {
     const max = 120;
     const ratio = Math.min(minutes / max, 1);
     const r = Math.floor(255 * ratio);
     const g = Math.floor(200 - ratio * 120);
-    return `rgb(${r}, ${g}, 100)`;
+    return `rgb(${r}, ${g}, 100, 0.3)`; // transparent overlay
   };
 
   const dateCellRender = (value: Dayjs) => {
@@ -42,23 +42,57 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
       data.avgFocusLevel ? `, Focus: ${data.avgFocusLevel}` : ""
     }`;
 
+    const listData = [
+      { type: "success", content: `${data.minutes} min` },
+      ...(data.avgFocusLevel ? [{ type: "warning", content: `Focus ${data.avgFocusLevel}` }] : []),
+    ];
+
     return (
       <Tooltip title={tooltipText}>
-        <div
-          className="focus-day-cell"
-          style={{
-            backgroundColor: getHeatColor(data.minutes),
-            color: data.minutes > 60 ? "#fff" : "#222",
-          }}
-          onClick={() => {
-            setSelectedDay(data);
-            setIsModalVisible(true);
-          }}
-        >
-          {value.date()}
+        <div style={{ position: "relative", width: "100%", height: "100%", cursor: "pointer" }}
+             onClick={() => {
+               setSelectedDay(data);
+               setIsModalVisible(true);
+             }}>
+          {/* Heat overlay */}
+          <div
+            style={{
+              backgroundColor: getHeatColor(data.minutes),
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              borderRadius: "4px",
+              zIndex: 0,
+            }}
+          />
+          {/* Badges / info */}
+          <ul
+            className="events"
+            style={{
+              position: "relative",
+              zIndex: 1,
+              margin: 0,
+              padding: 2,
+              listStyle: "none",
+              fontSize: "0.7rem",
+            }}
+          >
+            {listData.map((item, i) => (
+              <li key={i}>
+                <Badge status={item.type as BadgeProps["status"]} text={item.content} />
+              </li>
+            ))}
+          </ul>
         </div>
       </Tooltip>
     );
+  };
+
+  const cellRender: CalendarProps<Dayjs>["cellRender"] = (current, info) => {
+    if (info.type === "date") return dateCellRender(current);
+    return info.originNode;
   };
 
   const getWeekTotal = (start: Dayjs) => {
@@ -75,11 +109,7 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
     const start = date.startOf("month");
     const end = date.endOf("month");
     let total = 0;
-    for (
-      let d = start.clone();
-      d.isBefore(end) || d.isSame(end, "day");
-      d = d.add(1, "day")
-    ) {
+    for (let d = start.clone(); d.isBefore(end) || d.isSame(end, "day"); d = d.add(1, "day")) {
       const dayData = getDayData(d);
       if (dayData) total += dayData.minutes;
     }
@@ -90,11 +120,7 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
     <div className="focus-calendar-card">
       <h2>📅 Focus Calendar</h2>
 
-      <Calendar
-        dateCellRender={dateCellRender}
-        fullscreen={false}
-        className="focus-calendar"
-      />
+      <Calendar cellRender={cellRender} fullscreen={false} className="focus-calendar" />
 
       <div className="focus-summary">
         <Tag color="green">
@@ -119,9 +145,7 @@ const FocusCalendar: React.FC<FocusCalendarProps> = ({ history }) => {
                 <span>{t.task}</span>
                 <span>
                   {t.minutes} min{" "}
-                  {t.focusLevel !== undefined && (
-                    <Tag color="gold">Focus {t.focusLevel}</Tag>
-                  )}
+                  {t.focusLevel !== undefined && <Tag color="gold">Focus {t.focusLevel}</Tag>}
                 </span>
               </li>
             ))}

@@ -11,7 +11,6 @@ export const getTasks = async (req: Request, res: Response) => {
   }
 };
 
-// Create a new task
 export const createTask = async (req: Request, res: Response) => {
   try {
     const { name, priority } = req.body;
@@ -23,7 +22,6 @@ export const createTask = async (req: Request, res: Response) => {
   }
 };
 
-// Delete a task
 export const deleteTask = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

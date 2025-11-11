@@ -1,14 +1,16 @@
 .landing-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* header + content stacked vertically */
   align-items: center;
-  height: 100vh;
+  justify-content: flex-start; /* start from top so header stays visible */
+  min-height: 100vh;
   background: linear-gradient(135deg, #babde6 0%, #547aec 50%, #064eca 100%);
   color: white;
-  text-align: center;
   font-family: "Poppins", sans-serif;
+  text-align: center;
 }
 
+/* Glassy card for content */
 .landing-content {
   max-width: 500px;
   padding: 2rem;
@@ -16,8 +18,17 @@
   border-radius: 20px;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  margin-top: 300px;
+  animation: float 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
 }
 
+/* Card hover effect */
+.landing-content:hover {
+  transform: scale(1.03);
+}
+
+/* Title & subtitle */
 .landing-title {
   font-size: 2.5rem;
   margin-bottom: 1rem;
@@ -29,6 +40,7 @@
   line-height: 1.6;
 }
 
+/* Start button */
 .landing-button {
   background: white;
   color: #2575fc;
@@ -47,11 +59,7 @@
   transform: scale(1.05);
 }
 
-.landing-content:hover {
-  transform: scale(1.03);
-}
-
-/* Floating animation */
+/* Floating animation keyframes */
 @keyframes float {
   0% {
     transform: translateY(0px);
@@ -62,16 +70,4 @@
   100% {
     transform: translateY(0px);
   }
-}
-
-.landing-content {
-  max-width: 500px;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-
-  /* Floating animation */
-  animation: float 3s ease-in-out infinite;
 }

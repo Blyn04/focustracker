@@ -1,73 +1,143 @@
-.landing-container {
-  display: flex;
-  flex-direction: column; /* header + content stacked vertically */
-  align-items: center;
-  justify-content: flex-start; /* start from top so header stays visible */
-  min-height: 100vh;
-  background: linear-gradient(135deg, #babde6 0%, #547aec 50%, #064eca 100%);
-  color: white;
+/* General Reset */
+body, html {
+  margin: 0;
+  padding: 0;
   font-family: "Poppins", sans-serif;
-  text-align: center;
 }
 
-/* Glassy card for content */
+/* Hero Section */
+.landing-hero {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6b8df2, #547aec, #064eca);
+  color: white;
+  position: relative;
+}
+
+/* Hero Card */
 .landing-content {
-  max-width: 500px;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  margin-top: 300px;
-  animation: float 3s ease-in-out infinite;
-  transition: transform 0.3s ease;
+  max-width: 480px;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 25px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  text-align: center;
+  animation: float 4s ease-in-out infinite;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Card hover effect */
 .landing-content:hover {
-  transform: scale(1.03);
+  transform: scale(1.05);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
 }
 
-/* Title & subtitle */
+/* Hero Title & Subtitle */
 .landing-title {
-  font-size: 2.5rem;
+  font-size: 3rem;
   margin-bottom: 1rem;
 }
 
 .landing-subtitle {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin-bottom: 2rem;
   line-height: 1.6;
 }
 
-/* Start button */
+/* Call to Action Button */
 .landing-button {
-  background: white;
-  color: #2575fc;
+  background: linear-gradient(135deg, #ff7b8a, #ff5252);
+  color: white;
   border: none;
-  padding: 0.8rem 1.6rem;
-  font-size: 1rem;
-  border-radius: 30px;
+  padding: 0.9rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 35px;
   cursor: pointer;
-  transition: all 0.3s ease;
   font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .landing-button:hover {
-  background: #2575fc;
-  color: white;
-  transform: scale(1.05);
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
 }
 
-/* Floating animation keyframes */
+/* Features Section */
+.landing-features-section {
+  padding: 4rem 1rem;
+  background: #f5f7ff;
+  text-align: center;
+  color: #064eca;
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.landing-features {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.feature-card {
+  background: white;
+  color: #064eca;
+  padding: 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  width: 200px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+}
+
+.feature-card span {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+/* Testimonials Section */
+.landing-testimonials-section {
+  padding: 3rem 1rem;
+  background: #064eca;
+  color: white;
+  text-align: center;
+}
+
+.landing-testimonials p {
+  font-style: italic;
+  margin: 1rem 0;
+  font-size: 1.1rem;
+}
+
+/* Scroll Prompt */
+.landing-scroll {
+  text-align: center;
+  font-size: 1.3rem;
+  margin: 2rem 0;
+  animation: bounce 2s infinite;
+  color: #064eca;
+}
+
+/* Floating animation for hero card */
 @keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-15px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0); }
+}
+
+/* Bounce animation */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
 }

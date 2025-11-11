@@ -76,7 +76,6 @@ function Header({ onShowBadges, hideNav = false, onLoginSuccess, onLogout }: Hea
         <AuthModal ref={authModalRef} onLoginSuccess={onLoginSuccess} />
       </header>
 
-      {/* Centered Logout Modal (top-level) */}
       {showLogoutModal && (
         <div className="modal-overlay">
           <div className="modal">

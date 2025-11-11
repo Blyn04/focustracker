@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "antd";
 import { LoginOutlined } from "@ant-design/icons";
 import AuthModal, { AuthModalRef } from "./AuthModal";
@@ -7,18 +7,30 @@ import "../styles/Header.css";
 interface HeaderProps {
   onShowBadges: () => void;
   hideNav?: boolean;
+  onLoginSuccess: () => void; // Called when login succeeds
+  onLogout: () => void; // Called when logout happens
 }
 
-function Header({ onShowBadges, hideNav = false }: HeaderProps) {
+function Header({ onShowBadges, hideNav = false, onLoginSuccess, onLogout }: HeaderProps) {
   const [loggedInUser, setLoggedInUser] = useState<string | null>(
     localStorage.getItem("loggedInUser")
   );
 
   const authModalRef = useRef<AuthModalRef>(null);
 
+  // Update local state if user logs in elsewhere
+  useEffect(() => {
+    const handleStorage = () => {
+      setLoggedInUser(localStorage.getItem("loggedInUser"));
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("loggedInUser");
     setLoggedInUser(null);
+    onLogout(); // Tell App to go back to LandingPage
   };
 
   return (
@@ -61,7 +73,7 @@ function Header({ onShowBadges, hideNav = false }: HeaderProps) {
         />
       )}
 
-      <AuthModal ref={authModalRef} />
+      <AuthModal ref={authModalRef} onLoginSuccess={onLoginSuccess} />
     </header>
   );
 }

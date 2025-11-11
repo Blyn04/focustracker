@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import FocusTimer, { TaskPriority } from "./components/FocusTimer";
 import TaskList, { TaskItem } from "./components/TaskList";
 import Stats from "./components/Stats";
@@ -8,6 +8,7 @@ import Confetti from "react-confetti";
 import "./styles/App.css";
 import BadgePanel from "./components/BadgePanel";
 import Header from "./components/Header";
+import AuthModal, { AuthModalRef } from "./components/AuthModal"; // import AuthModal
 
 interface FocusDay {
   date: string;
@@ -40,6 +41,8 @@ function App() {
   const [activeTask, setActiveTask] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [taskToRemove, setTaskToRemove] = useState<string | null>(null);
+
+  const authRef = useRef<AuthModalRef>(null); // Auth modal ref
 
   useEffect(() => {
     const saved = localStorage.getItem("focusData");
@@ -112,7 +115,6 @@ function App() {
               }
             : h
         );
-
       } else {
         return [
           ...prev,
@@ -132,7 +134,7 @@ function App() {
     if (newStreak >= 7 && !earnedBadges.includes("7-Day Streak")) {
       newBadges.push("7-Day Streak");
     }
-    
+
     if (todaySessions >= 5 && !earnedBadges.includes("5 Sessions in a Day")) {
       newBadges.push("5 Sessions in a Day");
     }
@@ -168,11 +170,16 @@ function App() {
   return (
     <div className="app">
       {showConfetti && <Confetti recycle={false} numberOfPieces={200} />}
+
       {!hasStarted ? (
         <LandingPage onStart={() => setHasStarted(true)} />
       ) : (
         <>
-          <Header onShowBadges={() => setShowAchievements(true)} />
+          <Header
+            onShowBadges={() => setShowAchievements(true)}
+            onLoginSuccess={() => setHasStarted(true)} 
+            onLogout={() => setHasStarted(false)}
+          />
 
           <div className="main-content">
             <FocusTimer
@@ -187,7 +194,7 @@ function App() {
               tasks={tasks}
               pendingTasks={pendingTasks}
               onStartTask={(taskName) => setActiveTask(taskName)}
-              onRemovePending={handleRemovePendingClick} 
+              onRemovePending={handleRemovePendingClick}
             />
 
             <Stats totalMinutes={totalMinutes} streak={streak} />
@@ -217,6 +224,12 @@ function App() {
           )}
         </>
       )}
+
+      {/* Add AuthModal for login/signup */}
+      <AuthModal
+        ref={authRef}
+        onLoginSuccess={() => setHasStarted(true)} // switch to main app on login
+      />
     </div>
   );
 }

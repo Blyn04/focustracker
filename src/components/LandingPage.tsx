@@ -4,10 +4,11 @@ import AuthModal, { AuthModalRef } from "./AuthModal";
 import "../styles/LandingPage.css";
 
 interface LandingPageProps {
-  onStart?: () => void;
+  onStart?: () => void;       // called when login succeeds
+  onLogout?: () => void;      // called when logout happens
 }
 
-function LandingPage({ onStart }: LandingPageProps) {
+function LandingPage({ onStart, onLogout }: LandingPageProps) {
   const authRef = useRef<AuthModalRef>(null);
 
   const handleGetStarted = () => {
@@ -16,7 +17,13 @@ function LandingPage({ onStart }: LandingPageProps) {
 
   return (
     <div className="landing-container">
-      <Header onShowBadges={() => {}} hideNav={true} />
+      {/* Pass the onStart as onLoginSuccess to Header */}
+      <Header
+        onShowBadges={() => {}}
+        hideNav={true}
+        onLoginSuccess={onStart!}
+        onLogout={onLogout!}   // now this comes from App.tsx
+      />
 
       <div className="landing-content">
         <h1 className="landing-title">Focus Tracker</h1>
@@ -29,7 +36,8 @@ function LandingPage({ onStart }: LandingPageProps) {
         </button>
       </div>
 
-      <AuthModal ref={authRef} />
+      {/* Pass the onStart callback to AuthModal */}
+      <AuthModal ref={authRef} onLoginSuccess={onStart!} />
     </div>
   );
 }

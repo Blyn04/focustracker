@@ -7,7 +7,11 @@ export interface AuthModalRef {
   open: () => void;
 }
 
-const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
+interface AuthModalProps {
+  onLoginSuccess: () => void; // callback when login succeeds
+}
+
+const AuthModal = forwardRef<AuthModalRef, AuthModalProps>(({ onLoginSuccess }, ref) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
   const [username, setUsername] = useState("");
@@ -33,9 +37,7 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
     setSuccessMessage("");
   };
 
-  useImperativeHandle(ref, () => ({
-    open,
-  }));
+  useImperativeHandle(ref, () => ({ open }));
 
   const handleAuth = () => {
     setErrorMessage("");
@@ -60,14 +62,12 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
         return;
       }
 
-      // Save user
       localStorage.setItem("user", JSON.stringify({ username, password }));
       setSuccessMessage("Signup successful! You can now log in.");
       setIsSignup(false);
       setUsername("");
       setPassword("");
       setConfirmPassword("");
-      setErrorMessage("");
       return;
     }
 
@@ -82,92 +82,91 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
     if (user.username === username && user.password === password) {
       localStorage.setItem("loggedInUser", username);
       close();
+      onLoginSuccess(); // <-- Notify parent
     } else {
       setErrorMessage("Invalid credentials.");
     }
   };
 
   return (
-    <>
-      <Modal
-        className="auth-modal"
-        open={isModalOpen}
-        onCancel={close}
-        footer={null}
-        centered
-        closeIcon={<span className="close-btn">&times;</span>}
-      >
-        <div className="auth-card">
-          <h2 className="auth-title">{isSignup ? "Sign Up" : "Login"}</h2>
-          <p className="auth-subtitle">
-            {isSignup
-              ? "Create your account to start tracking focus."
-              : "Login to continue tracking your focus sessions."}
-          </p>
+    <Modal
+      className="auth-modal"
+      open={isModalOpen}
+      onCancel={close}
+      footer={null}
+      centered
+      closeIcon={<span className="close-btn">&times;</span>}
+    >
+      <div className="auth-card">
+        <h2 className="auth-title">{isSignup ? "Sign Up" : "Login"}</h2>
+        <p className="auth-subtitle">
+          {isSignup
+            ? "Create your account to start tracking focus."
+            : "Login to continue tracking your focus sessions."}
+        </p>
 
-          <Input
-            prefix={<UserOutlined />}
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="auth-input"
-          />
+        <Input
+          prefix={<UserOutlined />}
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="auth-input"
+        />
+        <Input.Password
+          prefix={<LockOutlined />}
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="auth-input"
+        />
+        {isSignup && (
           <Input.Password
             prefix={<LockOutlined />}
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className="auth-input"
           />
-          {isSignup && (
-            <Input.Password
-              prefix={<LockOutlined />}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="auth-input"
-            />
+        )}
+
+        {errorMessage && <div className="auth-error-modal">{errorMessage}</div>}
+        {successMessage && <div className="auth-success-modal">{successMessage}</div>}
+
+        <Button type="primary" block onClick={handleAuth} className="auth-btn">
+          {isSignup ? "Sign Up" : "Login"}
+        </Button>
+
+        <div className="auth-toggle">
+          {isSignup ? (
+            <span>
+              Already have an account?{" "}
+              <a
+                onClick={() => {
+                  setIsSignup(false);
+                  setErrorMessage("");
+                  setSuccessMessage("");
+                }}
+              >
+                Login
+              </a>
+            </span>
+          ) : (
+            <span>
+              Don’t have an account?{" "}
+              <a
+                onClick={() => {
+                  setIsSignup(true);
+                  setErrorMessage("");
+                  setSuccessMessage("");
+                }}
+              >
+                Sign up
+              </a>
+            </span>
           )}
-
-          {errorMessage && <div className="auth-error-modal">{errorMessage}</div>}
-          {successMessage && <div className="auth-success-modal">{successMessage}</div>}
-
-          <Button type="primary" block onClick={handleAuth} className="auth-btn">
-            {isSignup ? "Sign Up" : "Login"}
-          </Button>
-
-          <div className="auth-toggle">
-            {isSignup ? (
-              <span>
-                Already have an account?{" "}
-                <a
-                  onClick={() => {
-                    setIsSignup(false);
-                    setErrorMessage("");
-                    setSuccessMessage("");
-                  }}
-                >
-                  Login
-                </a>
-              </span>
-            ) : (
-              <span>
-                Don’t have an account?{" "}
-                <a
-                  onClick={() => {
-                    setIsSignup(true);
-                    setErrorMessage("");
-                    setSuccessMessage("");
-                  }}
-                >
-                  Sign up
-                </a>
-              </span>
-            )}
-          </div>
         </div>
-      </Modal>
-    </>
+      </div>
+    </Modal>
   );
 });
 

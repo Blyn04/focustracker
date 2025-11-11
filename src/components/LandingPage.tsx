@@ -9,7 +9,7 @@ interface LandingPageProps {
 function LandingPage({ onStart }: LandingPageProps) {
   return (
     <div className="landing-container">
-      <Header onShowBadges={() => {}} />
+      <Header onShowBadges={() => {}} hideNav={true} /> {/* hide buttons */}
 
       <div className="landing-content">
         <h1 className="landing-title">Focus Tracker</h1>
@@ -24,5 +24,6 @@ function LandingPage({ onStart }: LandingPageProps) {
     </div>
   );
 }
+
 
 export default LandingPage;

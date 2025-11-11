@@ -5,11 +5,12 @@ import "../styles/Header.css";
 
 interface HeaderProps {
   onShowBadges: () => void;
+  hideNav?: boolean; // optional prop
 }
 
-function Header({ onShowBadges }: HeaderProps) {
+function Header({ onShowBadges, hideNav = false }: HeaderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSignup, setIsSignup] = useState(false); // starts as login
+  const [isSignup, setIsSignup] = useState(false); 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -18,7 +19,7 @@ function Header({ onShowBadges }: HeaderProps) {
   );
 
   const openModal = () => {
-    setIsSignup(false); // always open with login mode
+    setIsSignup(false);
     setIsModalOpen(true);
   };
 
@@ -76,30 +77,42 @@ function Header({ onShowBadges }: HeaderProps) {
         <h1 className="title">Focus Tracker</h1>
       </div>
 
-      <nav className="nav-buttons">
-        <button className="nav-btn" onClick={onShowBadges}>
-          🏆 Achievements
-        </button>
-        <button className="nav-btn">📊 Stats</button>
-        <button className="nav-btn">⚙️ Settings</button>
+      {!hideNav && (
+        <nav className="nav-buttons">
+          <button className="nav-btn" onClick={onShowBadges}>
+            🏆 Achievements
+          </button>
+          <button className="nav-btn">📊 Stats</button>
+          <button className="nav-btn">⚙️ Settings</button>
 
-        {loggedInUser ? (
-          <>
-            <span className="welcome-text">Hi, {loggedInUser}</span>
-            <button className="nav-btn" onClick={handleLogout}>
-              🚪 Logout
-            </button>
-          </>
-        ) : (
-          <Button
-            type="primary"
-            shape="circle"
-            icon={<LoginOutlined />}
-            onClick={openModal}
-            className="auth-btn"
-          />
-        )}
-      </nav>
+          {loggedInUser ? (
+            <>
+              <span className="welcome-text">Hi, {loggedInUser}</span>
+              <button className="nav-btn" onClick={handleLogout}>
+                🚪 Logout
+              </button>
+            </>
+          ) : (
+            <Button
+              type="primary"
+              shape="circle"
+              icon={<LoginOutlined />}
+              onClick={openModal}
+              className="auth-btn"
+            />
+          )}
+        </nav>
+      )}
+
+      {hideNav && !loggedInUser && (
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<LoginOutlined />}
+          onClick={openModal}
+          className="auth-btn"
+        />
+      )}
 
       <Modal
         title={isSignup ? "Sign Up" : "Login"}
@@ -152,5 +165,6 @@ function Header({ onShowBadges }: HeaderProps) {
     </header>
   );
 }
+
 
 export default Header;

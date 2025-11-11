@@ -1,0 +1,105 @@
+/* Modal container */
+.auth-modal .ant-modal-content {
+  border-radius: 25px;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Close button */
+.close-btn {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Card inside modal */
+.auth-card {
+  background: #ffffff;
+  border-radius: 25px;
+  padding: 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Slide up animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #064eca;
+}
+
+.auth-subtitle {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+/* Inputs */
+.auth-input {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 15px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  transition: all 0.3s;
+}
+
+.auth-input:focus {
+  border-color: #064eca;
+  box-shadow: 0 0 10px rgba(6, 78, 202, 0.3);
+}
+
+/* Buttons */
+.auth-btn {
+  background: linear-gradient(135deg, #2575fc, #064eca);
+  color: white;
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 0.8rem 0;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  transition: all 0.3s;
+}
+
+.auth-btn:hover {
+  background: linear-gradient(135deg, #064eca, #2575fc);
+  transform: scale(1.03);
+}
+
+/* Toggle link */
+.auth-toggle {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.auth-toggle a {
+  color: #2575fc;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.auth-toggle a:hover {
+  color: #064eca;
+  text-decoration: underline;
+}

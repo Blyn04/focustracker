@@ -1,6 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle } from "react";
 import { Modal, Input, Button, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import "../styles/AuthModal.css";
 
 export interface AuthModalRef {
   open: () => void;
@@ -64,51 +65,62 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
 
   return (
     <Modal
-      title={isSignup ? "Sign Up" : "Login"}
+      className="auth-modal"
       open={isModalOpen}
       onCancel={close}
       footer={null}
       centered
+      closeIcon={<span className="close-btn">&times;</span>}
     >
-      <Input
-        prefix={<UserOutlined />}
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        style={{ marginBottom: 10 }}
-      />
-      <Input.Password
-        prefix={<LockOutlined />}
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{ marginBottom: 10 }}
-      />
-      {isSignup && (
+      <div className="auth-card">
+        <h2 className="auth-title">{isSignup ? "Sign Up" : "Login"}</h2>
+        <p className="auth-subtitle">
+          {isSignup
+            ? "Create your account to start tracking focus."
+            : "Login to continue tracking your focus sessions."}
+        </p>
+
+        <Input
+          prefix={<UserOutlined />}
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="auth-input"
+        />
         <Input.Password
           prefix={<LockOutlined />}
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          style={{ marginBottom: 10 }}
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="auth-input"
         />
-      )}
-      <Button type="primary" block onClick={handleAuth}>
-        {isSignup ? "Sign Up" : "Login"}
-      </Button>
-
-      <div style={{ marginTop: 10, textAlign: "center" }}>
-        {isSignup ? (
-          <span>
-            Already have an account?{" "}
-            <a onClick={() => setIsSignup(false)}>Login</a>
-          </span>
-        ) : (
-          <span>
-            Don’t have an account?{" "}
-            <a onClick={() => setIsSignup(true)}>Sign up</a>
-          </span>
+        {isSignup && (
+          <Input.Password
+            prefix={<LockOutlined />}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="auth-input"
+          />
         )}
+
+        <Button type="primary" block onClick={handleAuth} className="auth-btn">
+          {isSignup ? "Sign Up" : "Login"}
+        </Button>
+
+        <div className="auth-toggle">
+          {isSignup ? (
+            <span>
+              Already have an account?{" "}
+              <a onClick={() => setIsSignup(false)}>Login</a>
+            </span>
+          ) : (
+            <span>
+              Don’t have an account?{" "}
+              <a onClick={() => setIsSignup(true)}>Sign up</a>
+            </span>
+          )}
+        </div>
       </div>
     </Modal>
   );

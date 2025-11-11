@@ -73,29 +73,32 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent */
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent background */
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999; /* on top of everything */
+  z-index: 9999; /* ensure on top */
 }
 
-/* Modal box centered */
+/* Modal box centered with fixed width and height */
 .modal {
   background-color: #fff;
-  padding: 2rem;
+  width: 400px;  /* fixed width */
+  height: 200px; /* fixed height */
+  padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-  min-width: 300px;
-  max-width: 90%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* space for content and buttons */
 }
 
 /* Modal buttons */
 .modal-buttons {
-  margin-top: 1.5rem;
   display: flex;
   justify-content: space-around;
+  margin-top: 1rem;
 }
 
 .confirm-btn,
@@ -104,6 +107,7 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .confirm-btn {

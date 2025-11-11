@@ -113,3 +113,13 @@
   text-align: center;
   font-weight: 500;
 }
+
+.auth-success-modal {
+  background-color: #52c41a;
+  color: white;
+  padding: 8px 12px;
+  margin: 10px 0;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 500;
+}

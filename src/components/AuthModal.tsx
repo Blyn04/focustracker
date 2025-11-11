@@ -14,13 +14,14 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Error modal state
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const open = () => {
     setIsSignup(false);
     setIsModalOpen(true);
     setErrorMessage("");
+    setSuccessMessage("");
   };
 
   const close = () => {
@@ -29,6 +30,7 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
     setPassword("");
     setConfirmPassword("");
     setErrorMessage("");
+    setSuccessMessage("");
   };
 
   useImperativeHandle(ref, () => ({
@@ -36,6 +38,9 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
   }));
 
   const handleAuth = () => {
+    setErrorMessage("");
+    setSuccessMessage("");
+
     if (!username.trim()) {
       setErrorMessage("Username is required.");
       return;
@@ -44,6 +49,7 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
       setErrorMessage("Password is required.");
       return;
     }
+
     if (isSignup) {
       if (!confirmPassword) {
         setErrorMessage("Confirm your password.");
@@ -53,26 +59,31 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
         setErrorMessage("Passwords do not match.");
         return;
       }
+
+      // Save user
       localStorage.setItem("user", JSON.stringify({ username, password }));
+      setSuccessMessage("Signup successful! You can now log in.");
       setIsSignup(false);
       setUsername("");
       setPassword("");
       setConfirmPassword("");
       setErrorMessage("");
+      return;
+    }
+
+    // Login
+    const savedUser = localStorage.getItem("user");
+    if (!savedUser) {
+      setErrorMessage("No user found. Please sign up first.");
+      return;
+    }
+
+    const user = JSON.parse(savedUser);
+    if (user.username === username && user.password === password) {
+      localStorage.setItem("loggedInUser", username);
+      close();
     } else {
-      const savedUser = localStorage.getItem("user");
-      if (!savedUser) {
-        setErrorMessage("No user found. Please sign up first.");
-        return;
-      }
-      const user = JSON.parse(savedUser);
-      if (user.username === username && user.password === password) {
-        localStorage.setItem("loggedInUser", username);
-        close();
-      } else {
-        setErrorMessage("Invalid credentials.");
-        return;
-      }
+      setErrorMessage("Invalid credentials.");
     }
   };
 
@@ -119,6 +130,7 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
           )}
 
           {errorMessage && <div className="auth-error-modal">{errorMessage}</div>}
+          {successMessage && <div className="auth-success-modal">{successMessage}</div>}
 
           <Button type="primary" block onClick={handleAuth} className="auth-btn">
             {isSignup ? "Sign Up" : "Login"}
@@ -132,6 +144,7 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
                   onClick={() => {
                     setIsSignup(false);
                     setErrorMessage("");
+                    setSuccessMessage("");
                   }}
                 >
                   Login
@@ -144,6 +157,7 @@ const AuthModal = forwardRef<AuthModalRef>((_, ref) => {
                   onClick={() => {
                     setIsSignup(true);
                     setErrorMessage("");
+                    setSuccessMessage("");
                   }}
                 >
                   Sign up

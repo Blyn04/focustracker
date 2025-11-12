@@ -17,7 +17,6 @@ function LandingPage({ onStart, onLogout }: LandingPageProps) {
 
   return (
     <>
-      {/* Header */}
       <Header
         onShowBadges={() => {}}
         hideNav={true}
@@ -25,7 +24,6 @@ function LandingPage({ onStart, onLogout }: LandingPageProps) {
         onLogout={onLogout!}
       />
 
-      {/* Hero Section */}
       <section className="landing-hero">
         <div className="landing-content">
           <h1 className="landing-title">Focus Tracker</h1>
@@ -38,7 +36,6 @@ function LandingPage({ onStart, onLogout }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="landing-features-section">
         <h2 className="section-title">Why Choose Focus Tracker?</h2>
         <div className="landing-features">
@@ -60,7 +57,6 @@ function LandingPage({ onStart, onLogout }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section className="landing-testimonials-section">
         <h2 className="section-title">What Users Say</h2>
         <div className="landing-testimonials">
@@ -69,10 +65,8 @@ function LandingPage({ onStart, onLogout }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Scroll Prompt */}
       <div className="landing-scroll">⬇ Scroll to explore</div>
 
-      {/* Auth Modal */}
       <AuthModal ref={authRef} onLoginSuccess={onStart!} />
     </>
   );
